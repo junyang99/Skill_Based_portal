@@ -78,7 +78,7 @@
                         
                         <div class="d-flex">
                             <router-link :to="{ name: 'overallListingHR'}">
-                                <button class="submit-btn">
+                                <button class="submit-btn" @click="saveData">
                                     SAVE
                                 </button>
                             </router-link>
@@ -99,6 +99,7 @@
 
 <script>
 import VueMultiselect from 'vue-multiselect'
+import axios from 'axios';
  
     export default {
         name: 'roleApplication',
@@ -109,30 +110,22 @@ import VueMultiselect from 'vue-multiselect'
             document.title = "All in One";
         },
         created() {
-            console.log("working")
+            console.log("working");
+            this.fetchRoleDetails();
+            this.fetchOptions();
         },
 
         data() {
             return {
-                selected: [
-                    { name: 'Audit Compliance', code: 'Audit Compliance' },
-                    { name: 'Audit Frameworks', code: 'Audit Frameworks' },
-                    { name: 'Budgeting', code: 'Budgeting' }
-                ],
-                options: [
-                    { name: 'Audit Compliance', code: 'Audit Compliance' },
-                    { name: 'Audit Frameworks', code: 'Audit Frameworks' },
-                    { name: 'Budgeting', code: 'Budgeting' }
-                ],
+                selected: [],
+                options: [],
                 input: {
-                    roleName: 'Account Manager',
-                    department: 'Sales',
-                    roleDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla euismod, nisl vitae aliquam ultricies, nunc nisl ultricies nunc, vitae aliquam nisl nisl vitae aliquam ultricies, nunc nisl ultricies nunc, vitae aliquam nisl',
-                    requiredSkills: ['Audit Frameworks', 'Budgeting', 'Business Acumen'],
-                    
-                    // joel plz take note i need the input dates like this for it to display properly
-                    startDate: '2023-10-10',
-                    endDate: '2023-10-20',
+                    roleName: '',
+                    department: '',
+                    roleDescription: '',
+                    requiredSkills: [],
+                    startDate: '',
+                    endDate: '',
                 }
             };
         },
@@ -146,8 +139,99 @@ import VueMultiselect from 'vue-multiselect'
             this.taggingOptions.push(tag)
             this.taggingSelected.push(tag)
             },
+            formatDate(dateString) {
+                if (!dateString || dateString === 'null') {
+                    return 'N/A'; // Handle cases where the date is null or empty
+                }
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Add 1 to month because it's zero-based
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
+                },
+                revertToSQLDateFormat(dateString) {
+                    if (!dateString || dateString === 'null') {
+                        return null; // Handle cases where the date is null or empty
+                    }
+
+                    // Split the "yyyy-mm-dd" string into year, month, and day
+                    const [year, month, day] = dateString.split('-');
+
+                    // Create a new Date object with the year, month, and day
+                    const date = new Date(year, month - 1, day);
+
+                    // Get the date in SQL format (e.g., "YYYY-MM-DD")
+                    const sqlDate = date.toISOString().slice(0, 10);
+
+                    return sqlDate;
+                },
+            fetchRoleDetails() {
+                // Get the roleName from the route's parameters
+                const roleName = this.$route.params.roleName;
+                console.log("Role Name:", roleName);
+
+                if (roleName) {
+                    // Make an Axios GET request with the roleName parameter
+                    axios.get(`http://localhost:5018/HR/role_admin?role_name=${roleName}`)
+                    .then(response => {
+                        // Handle the response and update the input data
+                        const roleData = response.data.roles[0];
+                        this.input.roleName = roleData.role_name;
+                        this.input.department = roleData.department;
+                        this.selected = roleData.skills.map(skill => ({ name: skill, code: skill }));
+                        this.input.roleDescription = roleData.description;
+                        this.input.startDate = this.formatDate(roleData.start_date);
+                        this.input.endDate = this.formatDate(roleData.end_date);
+                        console.log(this.input)
+                        console.log(this.selected)
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch role details:', error);
+                    });
+                }
+                },
+            fetchOptions() {
+                axios.get('http://localhost:5011/Role_Skill')
+                    .then(response => {
+                        // Extract and set the options data to the options array
+                        const roles = response.data.data['Roles-Skill'];
+                        const uniqueRoleDesc = Array.from(new Set(roles.map(role => role.Role_Desc)));
+
+                        // Create an array of objects with the unique Role_Desc values
+                        this.options = uniqueRoleDesc.map(roleDesc => ({
+                        name: roleDesc,
+                        code: roleDesc
+                        }));
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch options:', error);
+                    });
+            },
+            saveData() {
+                // Here you can implement your Axios POST request to save the data
+                const startDateSQL = this.revertToSQLDateFormat(this.input.startDate);
+                const endDateSQL = this.revertToSQLDateFormat(this.input.endDate);
+
+                // Here you can implement your Axios POST request to save the data
+                axios.put('http://localhost:5018/HR/role_admin', {
+                    role_name: this.input.roleName,
+                    department: this.input.department,
+                    description: this.input.roleDescription,
+                    skills: this.selected.map(skill => skill.name),
+                    start_date: startDateSQL,
+                    end_date: endDateSQL,
+                })
+                .then(response => {
+                    // Handle the response (e.g., show a success message)
+                    console.log('Data saved successfully:', response.data);
+                })
+                .catch(error => {
+                    // Handle errors (e.g., show an error message)
+                    console.error('Failed to save data:', error);
+                });
+            }
         }
-    }
+};
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

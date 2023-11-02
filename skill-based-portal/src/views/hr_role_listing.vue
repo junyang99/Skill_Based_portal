@@ -137,6 +137,7 @@ import axios from 'axios';
             ]
             };
         },
+        
         async created() {
             try {
             this.roleName = this.$route.params.roleName; // Assign the value to roleName
@@ -144,7 +145,7 @@ import axios from 'axios';
             const encodedRoleName = encodeURIComponent(this.roleName);
 
             // Make an API request to fetch data based on this.roleName
-            const axios_url = 'http://localhost:5000/HR/role_admin?role_name='+encodedRoleName+"&exact_match=true"
+            const axios_url = 'http://localhost:5018/HR/role_admin?role_name='+encodedRoleName+"&exact_match=true"
             const response = await axios.get(axios_url);
 
             // Extract and set the data to roleData and allApplicants

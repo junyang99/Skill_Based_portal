@@ -62,7 +62,7 @@ const routes = [
         component: () => import("../views/hr_view_application.vue")
     },
     {
-        path: "/Edit-Listing-HR",
+        path: "/Edit-Listing-HR/:roleName",
         name: "editListingHR",
         component: () => import("../views/hr_edit_listing.vue")
     },

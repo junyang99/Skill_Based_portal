@@ -135,6 +135,7 @@ def get_role():
     role_name_query = request.args.get('role_name')
     department_query = request.args.get('department')
     sort_by = request.args.get('sort_by')
+    exact_match = request.args.get('exact_match')
 
     # Query roles with optional filtering and sorting
     #example:
@@ -147,7 +148,13 @@ def get_role():
     filters = []
 
     if role_name_query:
-        filters.append(Role.role_name.like(f'%{role_name_query}%'))
+         # Check if 'exact_match' is provided in the query
+        if exact_match and exact_match.lower() == 'true':
+            # Filter by exact role name match
+            roles_query = roles_query.filter(Role.role_name == role_name_query)
+        else:
+            # Filter by partial role name match
+            filters.append(Role.role_name.like(f'%{role_name_query}%'))
 
     if department_query:
         filters.append(Role.department.like(f'%{department_query}%'))
@@ -191,6 +198,7 @@ def get_role():
         #append all roles into roles_data list
         role_data.append({
             'department': role.department,
+            'description': role.role_desc,
             'skills': skills,
             'role_name': role.role_name,
             'start_date': start_date,
@@ -288,5 +296,6 @@ def update_role():
     }), 400
 
 if __name__ == '__main__':
-    app.run(port = 5000, debug=True)
+    CORS(app)
+    app.run(port = 5018, debug=True)
 

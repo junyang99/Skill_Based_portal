@@ -23,14 +23,14 @@
         
                         <div class="col-3">
                             <div class="active-check">
-                                <input type="checkbox" id="active" name="active" value="active">
-                                <label for="active">Active</label>
+                                <input type="checkbox" v-model="activeOnly" id="activeCheckbox" class="form-check-input">
+                                <label for="activeCheckbox" class="form-check-label">Active</label>
                             </div>
                         </div>
 
                         <div class="col-3 create-new">
                             <!-- <router-link :to="{ name: 'roleApplication', params: { id: roleData[0].id } }"> -->
-                            <router-link :to="{ name: 'newListingHR'}">
+                            <router-link :to="{ name: 'newListingHR' }">
                                 <button class="create-new-btn">Create New</button>
                             </router-link>
                         </div>
@@ -67,7 +67,7 @@
                                 <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
                             </router-link>
 
-                            <router-link :to="{ name: 'editListingHR'}">
+                            <router-link :to="{ name: 'editListingHR', params: { roleName: role.role_name } }">
                                 <img class="table-actions" src="../assets/icons/edit.png" />
                             </router-link>
 
@@ -97,18 +97,26 @@ import axios from 'axios';
             return {
             allRoles: [],
             searchText: '',
+            activeOnly: false,
             };
         },
         computed: {
             filteredRoles() {
-            if (this.searchText === '') {
-                return this.allRoles; // Return all roles if search text is empty
-            }
-            return this.allRoles.filter(role => {
-                return role.role_name.toLowerCase().includes(this.searchText.toLowerCase());
-            });
+                let filteredRoles = this.allRoles;
+
+                if (this.activeOnly) {
+                filteredRoles = filteredRoles.filter(role => role.status === 'active');
+                }
+
+                if (this.searchText !== '') {
+                filteredRoles = filteredRoles.filter(role => {
+                    return role.role_name.toLowerCase().includes(this.searchText.toLowerCase());
+                });
+                }
+
+                return filteredRoles;
+                },
             },
-        },
         methods: {
             // Function to format the date string without the time
             formatDate(dateString) {
@@ -120,7 +128,7 @@ import axios from 'axios';
             },
             fetchRoles() {
                 // Make an HTTP GET request to fetch roles from the API
-                axios.get('http://localhost:5000/HR/role_admin')
+                axios.get('http://localhost:5018/HR/role_admin')
                     .then(response => {
                         // Extract the roles from the response and set them to allRoles
                         console.log(response.data.roles)

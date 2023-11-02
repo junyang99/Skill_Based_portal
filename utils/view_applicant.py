@@ -179,39 +179,20 @@ def get_all():
         'code': 400,
         'message': 'There is no records of applicant'
     }
-
-
+    
 @app.route('/Application/<int:Position_ID>')
 def get_application(Position_ID):
     applications = Application.query.filter_by(Position_ID=Position_ID).all()
-
     if applications:
-        application_data = []
-        for application in applications:
-            staff_skills = Staff_Skill.query.filter_by(
-                Staff_ID=application.Staff_ID).all()
-            staff_skill_data = [skill.Skill_Name for skill in staff_skills]
-
-            application_data.append({
-                'Application_ID': application.Application_ID,
-                'Position_ID': application.Position_ID,
-                'Staff_ID': application.Staff_ID,
-                'Application_Date': application.Application_Date,
-                'Cover_Letter': application.Cover_Letter,
-                'Application_Status': application.Application_Status,
-                'Staff_Skill': staff_skill_data
-            })
-
+        application_data = [application.json() for application in applications]
         return jsonify({
             'code': 200,
             'applications': application_data
         })
-
     return jsonify({
         'code': 404,
         'message': 'No applications found for the specified Position_ID'
     }), 404
-
 
 if __name__ == '__main__':
     app.run(port=5004, debug=True)

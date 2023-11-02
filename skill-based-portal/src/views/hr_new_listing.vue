@@ -48,32 +48,17 @@
                                         :multiple="true"
                                         :taggable="true"
                                         placeholder="Search for a skill"
-                                        label="Role_Desc" 
-                                        track-by="Role_Desc"
-                                        ></VueMultiselect>
+                    
+                                    ></VueMultiselect>
                                 </div>
                             </div>
                         </div>
 
                         <br>
 
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="start_date">Start Date:</label>
-                                    <input v-model="start_date" type="date" name="start_date" id="start_date" />
-                                </div>
-                            </div>
+                        
 
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="end_date">End Date:</label>
-                                    <input v-model="end_date" type="date" name="end_date" id="end_date" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <br /><br />
+                        
                         
                         <div class="d-flex">
                             <router-link :to="{ name: 'overallListingHR'}">
@@ -164,7 +149,7 @@ import axios from 'axios'
                 };
 
             // Make the API request using Axios
-            axios.post("http://localhost:5000/HR/role_admin", postData)
+            axios.post("http://localhost:5018/HR/role_admin", postData)
                 .then(response => {
                 // Handle the API response here (e.g., show a success message)
                 console.log("API response:", response.data);
