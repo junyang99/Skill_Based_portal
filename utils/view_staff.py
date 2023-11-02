@@ -63,6 +63,7 @@ class Staff(db.Model):
             'Access_ID': self.Access_ID
         }
 
+# get all staff
 @app.route('/Staff')
 def get_all():
     staff_list = Staff.query.all()
@@ -78,5 +79,18 @@ def get_all():
         'message': 'There are no available staff members'
     }
 
+# get staff by staff id
+@app.route('/Staff/<int:Staff_ID>')
+def find_by_staff_id(Staff_ID):
+    staff = Staff.query.filter_by(Staff_ID=Staff_ID).first()
+    if staff:
+        return jsonify({
+            'code': 200,
+            'data': staff.json()
+        })
+    return jsonify({
+        'code': 404,
+        'message': 'Staff not found.'
+    }), 404
 if __name__ == '__main__':
     app.run(port=5008, debug=True)
