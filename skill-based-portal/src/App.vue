@@ -32,7 +32,7 @@
 
                     <li class="nav-link">
                     <router-link :to="{ name: 'overallListingHR'}">
-                        <a href="./views/hr_overall_listing.vue">HR Role Listing</a>
+                        <a href="./views/hr_overall_listing.vue">All Roles</a>
                     </router-link>
                     </li>
 
