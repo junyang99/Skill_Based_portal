@@ -29,7 +29,7 @@
                         <td>{{ index + 1 }}</td>
                         <td>{{ application.roleApplied }}</td>
                         <td>{{ application.department }}</td>
-                        <td>{{ application.dateSubmitted }}</td>
+                        <td>{{ application.Application_Date }}</td>
                         <td>
                             <span class="table-status" :style="{ backgroundColor: getStatusColor(application.status) }">
                                 {{ application.status }}
@@ -52,12 +52,21 @@
     </v-app>
 </template>
 <script>
+import axios from 'axios';
     export default {
         name: 'myApplications',
         mounted() {
             document.title = "All in One";
         },
         created() {
+            axios.get('http://127.0.0.1:5008/Staff/140001/applications') 
+            .then(response => {
+                this.applications = response.data.data;
+                console.log(response.data.data) // Update the applications data with the fetched data
+            })
+            .catch(error => {
+                console.error('Error fetching staff applications:', error);
+            });
             console.log("working")
         },
 
