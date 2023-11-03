@@ -1,0 +1,24 @@
+.skills-text {
+    font-family: display-semibold;
+    font-size: 30px;
+    padding-bottom: 15px;
+}
+
+.openingPeriod {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+}
+
+.openingPeriod p {
+    margin-bottom: 0;
+    font-family: display-semibold;
+}

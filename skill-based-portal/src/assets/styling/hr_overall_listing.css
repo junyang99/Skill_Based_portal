@@ -1,0 +1,32 @@
+.active-check{
+    height: 50px;
+    width: 35%;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-check label {
+    font-family: text-regular;
+    color: #1D1D1F;
+    margin-left: 10px;
+    margin-bottom: 0px;
+}
+
+.create-new {
+    text-align: right;
+}
+
+.create-new-btn {
+    background-color: var(--hr-actions);
+    font-family: text-bold;
+    color: var(--default-white);
+    font-size: 14px;
+    padding: 8px 22px;
+    border-radius: 980px;
+    margin-bottom: 0;
+    border: none;
+}
