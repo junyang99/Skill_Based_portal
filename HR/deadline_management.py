@@ -119,17 +119,17 @@ def create_position():
         # send data to relevant columnn
         try:
             data = request.get_json()
-            Position_ID = data.get('Position_ID')
+            # Position_ID = data.get('Position_ID')
             Role_Name = data.get('Role_Name')
             Starting_Date = data.get('Starting_Date')
             Ending_Date = data.get('Ending_Date')
 
-            # Check if position id is unique
-            if Open_position.query.filter_by(Position_ID=Position_ID).first():
-                return jsonify({
-                    'message': 'Position ID already exists',
-                    'data': {"role_name": Position_ID}
-                }), 400
+            # # Check if position id is unique
+            # if Open_position.query.filter_by(Position_ID=Position_ID).first():
+            #     return jsonify({
+            #         'message': 'Position ID already exists',
+            #         'data': {"role_name": Position_ID}
+            #     }), 400
 
             # Check if role name is unique
             if not (Role.query.filter_by(role_name=Role_Name).first()):
@@ -140,9 +140,9 @@ def create_position():
 
             fields_error = {}
 
-            position_id_error = field_check(Position_ID)
-            if position_id_error:
-                fields_error['position_id'] = position_id_error
+            # position_id_error = field_check(Position_ID)
+            # if position_id_error:
+            #     fields_error['position_id'] = position_id_error
 
             role_error = field_check(Role_Name)
             if role_error:
@@ -160,7 +160,7 @@ def create_position():
                 }), 400
 
             # Create the position listing
-            position = Open_position(Position_ID=Position_ID, Role_Name=Role_Name,
+            position = Open_position(Role_Name=Role_Name,
                                      Starting_Date=Starting_Date, Ending_Date=Ending_Date)
             db.session.add(position)
 
@@ -276,4 +276,4 @@ def create_position():
 
 
 if __name__ == '__main__':
-    app.run(port=5013, debug=True)
+    app.run(port=5015, debug=True)

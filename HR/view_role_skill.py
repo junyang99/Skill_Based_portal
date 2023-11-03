@@ -7,7 +7,7 @@ from sqlalchemy import ForeignKey
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/HR Portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/HR Portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -102,6 +102,22 @@ def get_role_skills(Role_Name):
     return {
         'code': 400,
         'message': 'No skills found for the role: ' + Role_Name
+    }
+
+@app.route('/Skill')
+def get_all_skill():
+    SkillList = Skill.query.all()
+    if SkillList:
+        return jsonify({
+            'code': 200,
+            'data': {
+                'Skill': [Skill.json() for Skill in SkillList]
+            }
+        }
+        )
+    return {
+        'code': 400,
+        'message': 'There is no records of Skill'
     }
 
 if __name__ == '__main__':

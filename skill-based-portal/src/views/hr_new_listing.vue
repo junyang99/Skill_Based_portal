@@ -114,14 +114,18 @@ import axios from 'axios'
 
         methods: {
             fetchSkills() {
-                // Make an HTTP GET request to fetch skills from the API
-                axios.get('http://localhost:5011/Role_Skill')
+                axios.get('http://localhost:5011/Skill')
                 .then(response => {
-                    console.log(response.data.data["Roles-Skill"]);
-                    const roleSkills = response.data.data["Roles-Skill"];
-                    
-                    // Extract all role descriptions and populate the options array
-                    this.options = roleSkills.map(item => item.Role_Desc);
+                    const skillList = response.data.data.Skill; // Correct the object path
+
+                    // Extract all skill names and populate the options array
+                    // this.options = skillList.map(item => {
+                    //     return {
+                    //         label: item.Skill_Name,
+                    //     };
+                    // });
+
+                    this.options = skillList.map(item => item.Skill_Name);
 
                     console.log('Options:', this.options);
                 })
@@ -129,6 +133,7 @@ import axios from 'axios'
                     console.error('Failed to fetch skills:', error);
                 });
             },
+
             addTag (newTag) {
             const tag = {
                 name: newTag,
