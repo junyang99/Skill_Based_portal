@@ -27,9 +27,9 @@
                     <tbody>
                         <tr v-for="(application, index) in applications" :key="index">
                         <td>{{ index + 1 }}</td>
-                        <td>{{ application.roleApplied }}</td>
-                        <td>{{ application.department }}</td>
-                        <td>{{ application.Application_Date }}</td>
+                        <td>{{ application.role_name }}</td>
+                        <td>{{ application.dept }}</td>
+                        <td>{{ application.application_date }}</td>
                         <td>
                             <span class="table-status" :style="{ backgroundColor: getStatusColor(application.status) }">
                                 {{ application.status }}
@@ -62,6 +62,7 @@ import axios from 'axios';
             axios.get('http://127.0.0.1:5008/Staff/140001/applications') 
             .then(response => {
                 this.applications = response.data.data;
+                console.log('LOGGING')
                 console.log(response.data.data) // Update the applications data with the fetched data
             })
             .catch(error => {

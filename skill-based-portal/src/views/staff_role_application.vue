@@ -113,7 +113,7 @@ export default {
     name: 'roleApplication',
     methods: {
         getResponse(){
-            const path = 'http://127.0.0.1:5008/Role-Application';
+            const path = 'http://127.0.0.1:5016/Role-Application';
             axios.get(path)
             .then ((res) => {
                 console.log(res.data)
@@ -127,19 +127,18 @@ export default {
         sendCoverLetter() {
             // Prepare the application data to be sent in the request
             const applicationData = {
-                Application_ID: 1,
-                Position_Id: 1, // Replace with the actual position ID
-                Staff_Id: 140001, // Replace with the actual staff ID
-                Application_Date: "2023-11-02",
-                // cover_letter: this.coverLetter, // Use the coverLetter data from your component
-                Cover_Letter: "thissss",
-                Application_Status: 1
-            };
+                "Application_ID": 1,
+                "Position_Id": 1,
+                "Staff_Id": 140001,
+                "Application_Date": "2023-11-02",
+                "Cover_Letter": "thissss",
+                "Application_Status": 1
+            }
 
             // Send a POST request to the Flask API to submit the application
             console.log("sending")
             console.log(applicationData)
-            axios.post('http://127.0.0.1:5008/submit-application', applicationData)
+            axios.post('http://127.0.0.1:5016/submit-application', applicationData)
             .then(() => {
             // Handle the successful submission, e.g., show a success message
             console.log('Application submitted successfully');
@@ -153,7 +152,7 @@ export default {
     },
     mounted() {
         console.log("mounted")
-        axios.get('http://127.0.0.1:5008/Staff/140001')
+        axios.get('http://127.0.0.1:5016/Staff/140001')
                 .then(response => {
                     var data = response.data.data
                     // console.log(this.$route.query.id)

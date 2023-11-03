@@ -95,7 +95,48 @@ class Staff(db.Model):
             'Email': self.Email,
             'Access_ID': self.Access_ID
         }
+
+class Role(db.Model):
+    __tablename__ = 'Role'
+
+    Role_Name = db.Column(db.String(20), nullable=False, primary_key=True)
+    Role_Desc = db.Column(db.String(100), nullable=False)
+    Department = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, Role_Name, Role_Desc, Department):
+        self.Role_Name = Role_Name
+        self.Role_Desc = Role_Desc
+        self.Department = Department
+
+    def json(self):
+        return {
+            'Role_Name': self.Role_Name,
+            'Role_Desc': self.Role_Desc,
+            'Department' : self.Department
+        }
     
+class Open_Position(db.Model):
+    __tablename__ = 'Open_Position'
+
+    Position_ID = db.Column(db.Integer, nullable=False, primary_key=True)
+    Role_Name = db.Column(db.String(20), nullable=False)
+    Starting_Date = db.Column(db.Date, nullable=False)
+    Ending_Date = db.Column(db.Date, nullable=False)
+
+    def __init__(self, Position_ID, Role_Name, Starting_Date, Ending_Date):
+        self.Position_ID = Position_ID
+        self.Role_Name = Role_Name
+        self.Starting_Date = Starting_Date
+        self.Ending_Date = Ending_Date
+
+    def json(self):
+        return {
+            'Position_ID': self.Position_ID,
+            'Role_Name': self.Role_Name,
+            'Starting_Date': self.Starting_Date,
+            'Ending_Date': self.Ending_Date
+        }
+
 # get staff by staff id
 @app.route('/Staff/<int:Staff_ID>', methods = ['POST', 'GET'])
 def find_by_staff_id(Staff_ID):
@@ -127,47 +168,96 @@ def get_all():
         'message': 'There are no available staff members'
     }
 
-@app.route('/submit-application', methods=['POST', 'GET'])
-def submit_application():
-    if request.method == 'POST':
-        try:
-            # Get data from the request
-            data = request.get_json()
-            position_id = data.get('Position_Id')  # Replace with the actual field name for position ID
-            staff_id = data.get('Staff_Id')  # Replace with the actual field name for staff ID
-            cover_letter = data.get('Cover_Letter')  # Replace with the actual field name for cover letter
-            application_status = 1  # Set the application status as needed
+# @app.route('/submit-application', methods=['POST', 'GET'])
+# def submit_application():
+#     if request.method == 'POST':
+#         try:
+#             # Get data from the request
+#             data = request.get_json()
+#             application_id = data.get('Application_ID')
+#             position_id = data.get('Position_Id') # Replace with the actual field name for position ID
+#             staff_id = data.get('Staff_Id')  # Replace with the actual field name for staff ID
+#             application_date = data.get('Application_Date')
+#             cover_letter = data.get('Cover_Letter')  # Replace with the actual field name for cover letter
+#             application_status = data.get('Application_Status')  # Set the application status as needed
 
-            # Create a new application object
-            new_application = Application(Application_ID=1, Position_ID=1, Staff_ID=1, Application_Date= "2023-11-02",Cover_Letter="abc", Application_Status=1)
+#             # Create a new application object
+#             new_application = Application(Application_ID=application_id, Position_ID=position_id, Staff_ID=staff_id, Application_Date= application_date,Cover_Letter=cover_letter, Application_Status=application_status)
 
-            # Add the new application to the database
-            db.session.add(new_application)
-            db.session.commit()
+#             # Add the new application to the database
+#             db.session.add(new_application)
+#             db.session.commit()
 
-            return jsonify({'message': 'Application submitted successfully'})
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+#             return jsonify({'message': 'Application submitted successfully'})
+#         except Exception as e:
+#             return jsonify({'error': str(e)}), 500
     
 
 @app.route('/Staff/<int:Staff_ID>/applications', methods=['GET'])
 def get_staff_applications(Staff_ID):
-    # Retrieve applications for the specified Staff_ID
-    applications = Application.query.filter_by(Staff_ID=Staff_ID).all()
+    try:
+        # Retrieve applications for the specified Staff_ID
+        applications = Application.query.filter_by(Staff_ID=Staff_ID).all()
 
-    if applications:
-        # Convert the application objects to JSON format
-        applications_json = [app.json() for app in applications]
+        if applications:
+            # Create a list to store the combined data
+            combined_data = []
 
+            for app in applications:
+                # Get the position associated with the application
+                position = Open_Position.query.get(app.Position_ID)
+
+                # Get the role associated with the position
+                role = Role.query.get(position.Role_Name)
+
+                # Construct a JSON object with role_name, dept, and application_date
+                combined_data.append({
+                    'role_name': role.Role_Name,
+                    'dept': role.Department,
+                    'application_date': app.Application_Date
+                })
+
+            return jsonify({
+                'code': 200,
+                'data': combined_data
+            })
+        else:
+            return jsonify({
+                'code': 404,
+                'message': 'No applications found for the specified Staff ID.'
+            }), 404
+    except Exception as e:
+        # Handle exceptions, log errors, and return an appropriate response
         return jsonify({
-            'code': 200,
-            'data': applications_json
-        })
-    else:
+            'code': 500,
+            'message': 'Internal Server Error: ' + str(e)
+        }), 500
+    
+@app.route('/Staff/<int:Staff_ID>/roles', methods=['GET'])
+def get_staff_roles(Staff_ID):
+    try:
+        # Retrieve roles for the specified Staff_ID from the Role table
+        roles = Role.query.filter_by(Staff_ID=Staff_ID).all()
+
+        if roles:
+            # Convert the role objects to JSON format
+            roles_json = [role.json() for role in roles]
+
+            return jsonify({
+                'code': 200,
+                'data': roles_json
+            })
+        else:
+            return jsonify({
+                'code': 404,
+                'message': 'No roles found for the specified Staff ID.'
+            }), 404
+    except Exception as e:
+        # Handle exceptions, log errors, and return an appropriate response
         return jsonify({
-            'code': 404,
-            'message': 'No applications found for the specified Staff ID.'
-        }), 404
+            'code': 500,
+            'message': 'Internal Server Error: ' + str(e)
+        }), 500
 
 
 # @app.route('/submit', methods=['POST'])
@@ -237,6 +327,6 @@ def get_staff_applications(Staff_ID):
 
 
 if __name__ == "__main__":
-    app.run(port=5008, debug=True)
+    app.run(port=5016, debug=True)
 
 
