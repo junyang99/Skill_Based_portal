@@ -100,10 +100,34 @@
     </v-app>
 </template>
 <script>
+    import axios from 'axios';
     export default {
         name: 'myProfile',
         mounted() {
             document.title = "All in One";
+            axios.get('http://127.0.0.1:5008/Staff/140001')
+                .then(response => {
+                    var data = response.data.data
+
+                    this.applicationData.staffID = 140001
+                    this.applicationData.staffName = data.Staff_FName + " " + data.Staff_LName
+                    this.applicationData.staffEmail = data.Email
+                    this.applicationData.staffCountry = data.Country
+                    this.applicationData.staffDepartment = data.Dept
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                axios.get('http://127.0.0.1:5012/Staff_Skill/140001')
+                .then(response => {
+                    console.log(response.data.data)
+                    var data = response.data.data
+
+                    this.applicationData.staffSkills = data['Staff-Skill'].map(skill => skill.Skill_Name)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         },
         created() {
             console.log("working")
