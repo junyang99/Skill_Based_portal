@@ -90,10 +90,10 @@
                                 <td>{{ applicant.applicantSkills }}</td>
                                 <!-- <td>{{ applicant.dateSubmitted }}</td> -->
                                 <td>
-                                    <router-link :to="{ name: 'viewApplicationHR'}">
+                                    <!-- <router-link :to="{ name: 'viewApplicationHR'}"> -->
                                         <img class="table-actions" src="../assets/icons/view.png" />
                                         <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
-                                    </router-link>
+                                    <!-- </router-link> -->
                                     <img class="table-actions" src="../assets/icons/edit.png" />
                                     <img class="table-actions" src="../assets/icons/delete.png" />
                                 </td>
@@ -110,11 +110,14 @@
 
 <script>
 import axios from 'axios';
+
     export default {
         name: 'specificListing',
+
         mounted() {
             document.title = "All in One";
         },
+
         data() {
             return {
             roleData: [
@@ -128,13 +131,15 @@ import axios from 'axios';
                 }
             ],
 
-            allApplicants: [
-                {
-                    applicantName: "Ben Tan",
-                    applicantSkills: "Audit Frameworks, Budgeting, Business Acumen",
+            allApplicants: [],
+
+            // allApplicants: [
+            //     {
+                    // applicantName: "Ben Tan",
+                    // applicantSkills: "Audit Frameworks, Budgeting, Business Acumen",
                     // dateSubmitted: "10 October 2023"
-                }
-            ]
+                // }
+            // ]
             };
         },
         
@@ -151,6 +156,12 @@ import axios from 'axios';
             // Extract and set the data to roleData and allApplicants
             this.roleData = response.data.roles; // Assuming the API response has the role details
             console.log("roleData:",this.roleData);
+
+            // THERE IS NO POSITION ID READILY AVAILABLE FOR USE, YOU NEED TO GIVE ME AN API THAT MATCHES THE ROLE NAME TO POSITION_ID
+
+            // const applicantsResponse = await axios.get(`http://localhost:5004/Application/${this.roleData.id}`);
+            // this.allApplicants = applicantsResponse.data.applications; // Assuming the API response has a list of applicants
+
             // this.allApplicants = response.data.applicants; // Assuming the API response has a list of applicants
             } catch (error) {
             console.error('Failed to fetch data:', error);

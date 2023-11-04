@@ -29,8 +29,8 @@ class RoleSkill(db.Model):
 
 class Open_position(db.Model):
     Role_Name = db.Column(db.String(20), db.ForeignKey('role.role_name'), primary_key=True)
-    Starting_Date = db.Column(db.Date, nullable=False)
-    Ending_Date = db.Column(db.Date, nullable=False)
+    Starting_Date = db.Column(db.Date)
+    Ending_Date = db.Column(db.Date)
 
 def field_check(field):
     min_length = 2
@@ -127,6 +127,9 @@ def create_role():
         "code": 400,
         "message": "Please use a valid json request"
     }), 400
+
+
+
 
 @app.route('/HR/role_admin', methods=['GET'])
 def get_role():
@@ -298,4 +301,3 @@ def update_role():
 if __name__ == '__main__':
     CORS(app)
     app.run(port = 5018, debug=True)
-

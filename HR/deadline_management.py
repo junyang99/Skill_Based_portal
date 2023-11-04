@@ -26,8 +26,8 @@ class RoleSkill(db.Model):
 class Open_position(db.Model):
     Position_ID = db.Column(db.String(20), primary_key=True)
     Role_Name = db.Column(db.String(20), db.ForeignKey('role.role_name'))
-    Starting_Date = db.Column(db.Date, nullable=False)
-    Ending_Date = db.Column(db.Date, nullable=False)
+    Starting_Date = db.Column(db.Date)
+    Ending_Date = db.Column(db.Date)
 
 # works
 # testing
@@ -111,46 +111,45 @@ def date_check(starting_date, ending_date, role_name):
 
     return None
 
-
-# Works
 @app.route('/HR/open_position', methods=['POST'])
 def create_position():
     if request.is_json:
-        # send data to relevant columnn
         try:
             data = request.get_json()
-            # Position_ID = data.get('Position_ID')
-            Role_Name = data.get('Role_Name')
-            Starting_Date = data.get('Starting_Date')
-            Ending_Date = data.get('Ending_Date')
+            title = data.get('role_name')
+            description = data.get('description')
+            department_name = data.get('department')
+            skills = data.get('skills')
 
-            # # Check if position id is unique
-            # if Open_position.query.filter_by(Position_ID=Position_ID).first():
-            #     return jsonify({
-            #         'message': 'Position ID already exists',
-            #         'data': {"role_name": Position_ID}
-            #     }), 400
-
-            # Check if role name is unique
-            if not (Role.query.filter_by(role_name=Role_Name).first()):
+            # Check if title is unique
+            if Role.query.filter_by(role_name=title).first():
                 return jsonify({
-                    'message': 'Role Name does not exist',
-                    'data': {"role_name": Role_Name}
+                    'message': 'Role name already exists',
+                    'data': {"role_name": title}
                 }), 400
 
             fields_error = {}
 
-            # position_id_error = field_check(Position_ID)
-            # if position_id_error:
-            #     fields_error['position_id'] = position_id_error
+            title_error = field_check(title)
+            if title_error:
+                fields_error['role_name'] = title_error
 
-            role_error = field_check(Role_Name)
-            if role_error:
-                fields_error['role_name'] = role_error
+            description_error = field_check(description)
+            if description_error:
+                fields_error['description'] = description_error
 
-            date_error = date_check(Starting_Date, Ending_Date, Role_Name)
-            if date_error:
-                fields_error['date_error'] = date_error
+            department_error = field_check(department_name)
+            if department_error:
+                fields_error['department'] = department_error
+
+            if isinstance(skills, list):
+                skills_error = field_check(skills)
+                if skills_error:
+                    fields_error['skills'] = skills_error
+            else:
+                fields_error['skills'] = "Skills should be a list"
+
+            # print(fields_error)
 
             # Check if any field is missing
             if fields_error:
@@ -159,25 +158,33 @@ def create_position():
                     'data': fields_error
                 }), 400
 
-            # Create the position listing
-            position = Open_position(Role_Name=Role_Name,
-                                     Starting_Date=Starting_Date, Ending_Date=Ending_Date)
-            db.session.add(position)
+            # Create the role listing
+            role = Role(role_name=title, role_desc=description, department=department_name)
+            db.session.add(role)
+
+            for skill in skills:
+                role_skill = RoleSkill(role_name=title, skill_name=skill)
+                db.session.add(role_skill)
 
             db.session.commit()
 
             return jsonify({
-                'message': 'New Position created successfully'
+                'message': 'Role listing created successfully'
             }), 201
 
         except Exception as e:
+            # Unexpected error in code
+            # exc_type, exc_obj, exc_tb = sys.exc_info()
+            # fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            # ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            # print(ex_str)
             print(str(e))
 
             return jsonify({
                 "code": 500,
                 "message": "internal error: " + str(e)
             }), 500
-
+        
     # if reached here, not a JSON request.
     return jsonify({
         "code": 400,
@@ -185,41 +192,45 @@ def create_position():
     }), 400
 
 
-# @app.route('/HR/role_admin', methods=['PUT'])
-# def update_role():
+# # Works
+# @app.route('/HR/open_position', methods=['POST'])
+# def create_position():
 #     if request.is_json:
+#         # send data to relevant columnn
 #         try:
 #             data = request.get_json()
-#             title = data.get('role_name')
-#             description = data.get('description')
-#             department_name = data.get('department')
-#             skills = data.get('skills')
+#             # Position_ID = data.get('Position_ID')
+#             Role_Name = data.get('Role_Name')
+#             Starting_Date = data.get('Starting_Date')
+#             Ending_Date = data.get('Ending_Date')
 
-#             role = Role.query.filter_by(role_name=title).first()
+#             # # Check if position id is unique
+#             # if Open_position.query.filter_by(Position_ID=Position_ID).first():
+#             #     return jsonify({
+#             #         'message': 'Position ID already exists',
+#             #         'data': {"role_name": Position_ID}
+#             #     }), 400
 
-#             if not role:
-#                 return jsonify({'message': 'Role not found'}), 404
+#             # Check if role name is unique
+#             if not (Role.query.filter_by(role_name=Role_Name).first()):
+#                 return jsonify({
+#                     'message': 'Role Name does not exist',
+#                     'data': {"role_name": Role_Name}
+#                 }), 400
 
-#             # field validation if it exists
 #             fields_error = {}
 
-#             if 'description' in data:
-#                 description_error = field_check(description)
-#                 if description_error:
-#                     fields_error['description'] = description_error
+#             # position_id_error = field_check(Position_ID)
+#             # if position_id_error:
+#             #     fields_error['position_id'] = position_id_error
 
-#             if 'department' in data:
-#                 department_error = field_check(department_name)
-#                 if department_error:
-#                     fields_error['department'] = department_error
+#             role_error = field_check(Role_Name)
+#             if role_error:
+#                 fields_error['role_name'] = role_error
 
-#             if 'skills' in data:
-#                 if isinstance(skills, list):
-#                     skills_error = field_check(skills)
-#                     if skills_error:
-#                         fields_error['skills'] = skills_error
-#                 else:
-#                     fields_error['skills'] = "Skills should be a list"
+#             date_error = date_check(Starting_Date, Ending_Date, Role_Name)
+#             if date_error:
+#                 fields_error['date_error'] = date_error
 
 #             # Check if any field is missing
 #             if fields_error:
@@ -228,37 +239,16 @@ def create_position():
 #                     'data': fields_error
 #                 }), 400
 
-#             # Update the role data with the new values
-#             if 'description' in data:
-#                 role.role_desc = description
+#             # Create the position listing
+#             position = Open_position(Role_Name=Role_Name,
+#                                      Starting_Date=Starting_Date, Ending_Date=Ending_Date)
+#             db.session.add(position)
 
-#             if 'department' in data:
-#                 role.department = department_name
-
-#             if 'skills' in data:
-#                 # Filter out skills that are already associated with the role
-#                 new_skills = [skill for skill in skills if skill not in [
-#                     s.skill_name for s in role.skills]]
-
-#                 # Add new skills
-#                 for skill in new_skills:
-#                     role_skill = RoleSkill(role_name=title, skill_name=skill)
-#                     db.session.add(role_skill)
-
-#             # Commit the changes to the database
 #             db.session.commit()
 
-#             # get skills for json response
-#             skills = [skill.skill_name for skill in role.skills]
-
 #             return jsonify({
-#                 'message': 'Role updated successfully',
-#                 'data': {
-#                     'role_name': role.role_name,
-#                     'role_desc': role.role_desc,
-#                     'department': role.department,
-#                     'skills': skills
-#                 }}), 200
+#                 'message': 'New Position created successfully'
+#             }), 201
 
 #         except Exception as e:
 #             print(str(e))

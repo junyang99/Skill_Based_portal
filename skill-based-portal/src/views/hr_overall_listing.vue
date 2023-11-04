@@ -67,9 +67,9 @@
                                 <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
                             </router-link>
 
-                            <router-link :to="{ name: 'editListingHR', params: { roleName: role.role_name } }">
+                            <!-- <router-link :to="{ name: 'editListingHR', params: { positionID: role.positionID } }"> -->
                                 <img class="table-actions" src="../assets/icons/edit.png" />
-                            </router-link>
+                            <!-- </router-link> -->
 
                             <img class="table-actions" src="../assets/icons/delete.png" />
                         </td>
@@ -85,19 +85,21 @@
 import axios from 'axios';
     export default {
         name: 'overallListingHR',
+
         mounted() {
             document.title = "All in One";
             this.fetchRoles();
         },
+
         created() {
             console.log("working")
         },
 
         data() {
             return {
-            allRoles: [],
-            searchText: '',
-            activeOnly: false,
+                allRoles: [],
+                searchText: '',
+                activeOnly: false,
             };
         },
         computed: {
@@ -105,11 +107,11 @@ import axios from 'axios';
                 let filteredRoles = this.allRoles;
 
                 if (this.activeOnly) {
-                filteredRoles = filteredRoles.filter(role => role.status === 'active');
+                    filteredRoles = filteredRoles.filter(role => role.status === 'active');
                 }
 
                 if (this.searchText !== '') {
-                filteredRoles = filteredRoles.filter(role => {
+                    filteredRoles = filteredRoles.filter(role => {
                     return role.role_name.toLowerCase().includes(this.searchText.toLowerCase());
                 });
                 }

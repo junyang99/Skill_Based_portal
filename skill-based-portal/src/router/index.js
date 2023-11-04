@@ -1,11 +1,11 @@
 import {createRouter, createWebHistory} from "vue-router";
 
 const routes = [
-    // {
-    //     path: "/",
-    //     name: "overallListing",
-    //     component: () => import("../views/overall_listing.vue")
-    // },
+    {
+        path: "/",
+        name: "loginPage",
+        component: () => import("../views/login_page.vue")
+    },
     {
         path: "/overallListing",
         name: "overallListing",
@@ -56,11 +56,11 @@ const routes = [
         name: "newListingHR",
         component: () => import("../views/hr_new_listing.vue")
     },
-    {
-        path: "/View-Application-HR",
-        name: "viewApplicationHR",
-        component: () => import("../views/hr_view_application.vue")
-    },
+    // {
+    //     path: "/View-Application-HR/:positionID",
+    //     name: "viewApplicationHR",
+    //     component: () => import("../views/hr_view_application.vue")
+    // },
     {
         path: "/Edit-Listing-HR/:roleName",
         name: "editListingHR",
