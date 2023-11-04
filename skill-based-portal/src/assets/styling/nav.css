@@ -55,11 +55,13 @@ ul li a {
     padding: 0;
     display: inline-block;
     vertical-align: middle;
+    font-size: 14px;
 }
 
 .left-align {
     margin-left: auto;
     display: flex;
+    padding-right: 5px;
 }
 
 .nav-link {
@@ -169,4 +171,22 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     padding-right: 35px;
+}
+
+.logout {
+    background-color: #404040;
+    font-family: text-regular;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 980px;
+    margin-bottom: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+}
+
+.logout a {
+    color: var(--default-white);
+    text-decoration: none;
+    border-bottom: none;
 }

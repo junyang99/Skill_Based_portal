@@ -1,4 +1,4 @@
-#Connected
+# Connected
 import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +13,26 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
 
-#Checked 
+# Checked
+
+
+class Skill(db.Model):
+    __tablename__ = 'Skill'
+
+    Skill_Name = db.Column(db.String(50), nullable=False, primary_key=True)
+    Skill_Desc = db.Column(db.String, nullable=False)
+
+    def __init__(self, Skill_Name, Skill_Desc):
+        self.Skill_Name = Skill_Name
+        self.Skill_Desc = Skill_Desc
+
+    def json(self):
+        return {
+            'Skill_Name': self.Skill_Name,
+            'Skill_Desc': self.Skill_Desc
+        }
+
+
 class Open_Position(db.Model):
     __tablename__ = 'Open_Position'
 
@@ -35,18 +54,19 @@ class Open_Position(db.Model):
             'Starting_Date': self.Starting_Date,
             'Ending_Date': self.Ending_Date
         }
-        
-#Checked
+
+# Checked
+
+
 class Access_Control(db.Model):
     __tablename__ = 'Access_Control'
 
     Access_ID = db.Column(db.Integer, nullable=False, primary_key=True)
     Access_Control_Name = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, Access_ID , Access_Control_Name):
-        self.Access_ID= Access_ID
+    def __init__(self, Access_ID, Access_Control_Name):
+        self.Access_ID = Access_ID
         self.Access_Control_Name = Access_Control_Name
-
 
     def json(self):
         return {
@@ -54,7 +74,9 @@ class Access_Control(db.Model):
             'Access_Control_Name': self.Access_Control_Name
         }
 
-#Checked
+# Checked
+
+
 class Staff(db.Model):
     __tablename__ = 'Staff'
 
@@ -64,7 +86,8 @@ class Staff(db.Model):
     Dept = db.Column(db.String(50), nullable=False)
     Country = db.Column(db.String(50), nullable=False)
     Email = db.Column(db.String(50), nullable=False)
-    Access_ID = db.Column(db.Integer, db.ForeignKey('Access_Control.Access_ID'), nullable=False)  # Foreign key reference
+    Access_ID = db.Column(db.Integer, db.ForeignKey(
+        'Access_Control.Access_ID'), nullable=False)  # Foreign key reference
     # access_control = db.relationship(Access_Control, backref='staff', lazy=True)
 
     def __init__(self, Staff_ID, Staff_FName, Staff_LName, Dept, Country, Email, Access_ID):
@@ -87,12 +110,37 @@ class Staff(db.Model):
             'Access_ID': self.Access_ID
         }
 
+
+class Staff_Skill(db.Model):
+    __tablename__ = 'Staff_Skill'
+
+    Staff_ID = db.Column(db.Integer, db.ForeignKey(
+        'Staff.Staff_ID'), primary_key=True)
+    Skill_Name = db.Column(db.String(50), db.ForeignKey(
+        'Skill.Skill_Name'), primary_key=True)
+
+    staff = db.relationship('Staff', backref='staff_skills')
+    skill = db.relationship('Skill', backref='staff_skills')
+
+    def __init__(self, Staff_ID, Skill_Name):
+        self.Staff_ID = Staff_ID
+        self.Skill_Name = Skill_Name
+
+    def json(self):
+        return {
+            'Staff_ID': self.Staff_ID,
+            'Skill_Name': self.Skill_Name
+        }
+
+
 class Application(db.Model):
     __tablename__ = 'Application'
 
     Application_ID = db.Column(db.Integer, nullable=False, primary_key=True)
-    Position_ID = db.Column(db.Integer, db.ForeignKey('Open_Position.Position_ID'), nullable=False)
-    Staff_ID = db.Column(db.Integer, db.ForeignKey('Staff.Staff_ID'), nullable=False)
+    Position_ID = db.Column(db.Integer, db.ForeignKey(
+        'Open_Position.Position_ID'), nullable=False)
+    Staff_ID = db.Column(db.Integer, db.ForeignKey(
+        'Staff.Staff_ID'), nullable=False)
     Application_Date = db.Column(db.Date, nullable=False)
     Cover_Letter = db.Column(db.String, nullable=False)
     Application_Status = db.Column(db.Integer, nullable=False)
@@ -132,29 +180,49 @@ def get_all():
         'message': 'There is no records of applicant'
     }
     
-# @app.route('/application/<string:Application_ID>')
-# def get_application(Application_ID):
-#     application = application.query.filter_by(
-#         Application_ID=Application_ID).first()
-#     if application:
-#         if application.quantity != 0:
-#             return jsonify({
-#                 'code': 200,
-#                 'application': application.json()
-#             }
-#             )
-#         else:
-#             return jsonify({
-#                 'code': 200,
-#                 'message': 'application does not exist.',
-#                 "application": application.json()
-#             }
-#             )
-#     return jsonify(
-#         {
-#             'code': 404,
-#             'message': 'application not found'
-#         }), 404
+
+@app.route('/Application/<string:Role_Name>')
+def get_application(Role_Name):
+    open_position_data = Open_Position.query.filter_by(Role_Name=Role_Name).first()
+    app_position_id = open_position_data.Position_ID
+    applications = Application.query.filter_by(Position_ID=app_position_id).all()
+
+    start_date = open_position_data.Starting_Date
+    end_date = open_position_data.Ending_Date
+
+    if applications:
+        application_data = []
+        for application in applications:
+            staff_skills = Staff_Skill.query.filter_by(
+                Staff_ID=application.Staff_ID).all()
+            staff_skill_data = [skill.Skill_Name for skill in staff_skills]
+
+            staff_data = Staff.query.filter_by(Staff_ID=application.Staff_ID).first()
+            staff_name = staff_data.Staff_FName + ' ' + staff_data.Staff_LName
+
+            application_data.append({
+                'Application_ID': application.Application_ID,
+                'Position_ID': application.Position_ID,
+                'Staff_ID': application.Staff_ID,
+                'Application_Date': application.Application_Date,
+                'Cover_Letter': application.Cover_Letter,
+                'Application_Status': application.Application_Status,
+                'Staff_Skill': staff_skill_data,
+                'Staff_Name': staff_name,
+                'Start_Date': start_date,
+                'End_Date': end_date,
+            })
+
+        return jsonify({
+            'code': 200,
+            'applications': application_data
+        })
+
+    return jsonify({
+        'code': 404,
+        'message': 'No applications found for the specified Position_ID'
+    }), 404
+
 
 if __name__ == '__main__':
     app.run(port=5004, debug=True)

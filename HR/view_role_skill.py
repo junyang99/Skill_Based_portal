@@ -104,5 +104,21 @@ def get_role_skills(Role_Name):
         'message': 'No skills found for the role: ' + Role_Name
     }
 
+@app.route('/Skill')
+def get_all_skill():
+    SkillList = Skill.query.all()
+    if SkillList:
+        return jsonify({
+            'code': 200,
+            'data': {
+                'Skill': [Skill.json() for Skill in SkillList]
+            }
+        }
+        )
+    return {
+        'code': 400,
+        'message': 'There is no records of Skill'
+    }
+
 if __name__ == '__main__':
     app.run(port=5011, debug=True)

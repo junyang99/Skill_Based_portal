@@ -61,8 +61,8 @@ CREATE TABLE IF NOT EXISTS Staff_Skill (
 CREATE TABLE IF NOT EXISTS Open_Position (
     Position_ID INT AUTO_INCREMENT,
     Role_Name VARCHAR(20) NOT NULL,
-    Starting_Date DATE NOT NULL,
-    Ending_Date DATE NOT NULL,
+    Starting_Date DATE,
+    Ending_Date DATE,
     PRIMARY KEY (Position_ID),
     FOREIGN KEY (Role_Name) REFERENCES Role(Role_Name)
 );

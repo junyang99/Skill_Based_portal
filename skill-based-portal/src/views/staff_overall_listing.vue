@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
                 
                 <div class="container ms-auto">
@@ -93,9 +96,11 @@
 </template>
 
 <script>
-import axios from 'axios';
-// import { handleDropdown } from "../assets/js/dropdown.js";
-import VueMultiselect from 'vue-multiselect'
+    import axios from 'axios';
+    // import { handleDropdown } from "../assets/js/dropdown.js";
+    import VueMultiselect from 'vue-multiselect'
+    import StaffNavbar from '@/components/staff_navbar.vue';
+    import HRNavbar from '@/components/hr_navbar.vue';
 
 export default {
     name: 'overallListing',
@@ -203,7 +208,9 @@ export default {
         }
     },
     components: {
-        VueMultiselect
+        VueMultiselect,
+        StaffNavbar,
+        HRNavbar
     },
     mounted() {
         document.title = "All in One";
@@ -321,7 +328,11 @@ export default {
                 } else {
                     return this.cardData;
                 }
-            }   
+            },   
+
+            role() {
+                return this.$route.params.role;
+            }
         }
     }
 </script>
