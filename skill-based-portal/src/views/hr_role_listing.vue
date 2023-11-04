@@ -54,16 +54,18 @@
 
                             <br><br>
 
-                            <div class="openingPeriod" v-if="roleData[0].startDate && roleData[0].endDate">
-                                <p>Start Date: {{ roleData[0].startDate }}</p>
-                                <p>End Date: {{ roleData[0].endDate }}</p>
+                            <!-- <div class="openingPeriod" v-if="roleData[0].startDate && roleData[0].endDate"> -->
+                            <div class="openingPeriod">
+                                <p>Start Date: {{ formatDate(roleData[0].start_date) }}</p>
+                                <p>End Date: {{ formatDate(roleData[0].end_date) }}</p>
                             </div>
                         </div>
                     </div>
 
                     <br><br>
 
-                    <div class="row" v-if="roleData[0].startDate && roleData[0].endDate">
+                    <!-- <div class="row" v-if="roleData[0].startDate && roleData[0].endDate"> -->
+                    <div class="row">
                         <div class="col">
                             <p class="page-subheading">View Applicants</p>
                         </div>
@@ -71,7 +73,8 @@
 
                     <br>
 
-                    <div class="row" v-if="roleData[0].startDate && roleData[0].endDate">
+                    <!-- <div class="row" v-if="roleData[0].startDate && roleData[0].endDate"> -->
+                    <div class="row">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -86,8 +89,18 @@
                             <tbody>
                                 <tr v-for="(applicant, index) in allApplicants" :key="index">
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ applicant.applicantName }}</td>
-                                <td>{{ applicant.applicantSkills }}</td>
+                                <td>{{ applicant.Staff_Name }}</td>
+
+                                <td> 
+                                    <div v-for="(skill, index) in applicant.Staff_Skill" :key="index">
+                                        {{ skill }}
+                                    </div>
+                                </td>
+
+                                <!-- <td>{{ applicant.Start_Date }}</td>
+                                <td>{{ applicant.End_Date }}</td> -->
+
+
                                 <!-- <td>{{ applicant.dateSubmitted }}</td> -->
                                 <td>
                                     <!-- <router-link :to="{ name: 'viewApplicationHR'}"> -->
@@ -157,16 +170,26 @@ import axios from 'axios';
             this.roleData = response.data.roles; // Assuming the API response has the role details
             console.log("roleData:",this.roleData);
 
-            // THERE IS NO POSITION ID READILY AVAILABLE FOR USE, YOU NEED TO GIVE ME AN API THAT MATCHES THE ROLE NAME TO POSITION_ID
+            const applicantsResponse = await axios.get(`http://localhost:5004/Application/${this.roleName}`);
+            this.allApplicants = applicantsResponse.data.applications; // Assuming the API response has a list of applicants
+            console.log(applicantsResponse);
+            console.log(this.allApplicants); // Corrected reference
 
-            // const applicantsResponse = await axios.get(`http://localhost:5004/Application/${this.roleData.id}`);
-            // this.allApplicants = applicantsResponse.data.applications; // Assuming the API response has a list of applicants
-
-            // this.allApplicants = response.data.applicants; // Assuming the API response has a list of applicants
             } catch (error) {
             console.error('Failed to fetch data:', error);
             }
         },
+
+        methods: {
+            // Function to format the date string without the time
+            formatDate(dateString) {
+                if (!dateString || dateString === 'null') {
+                    return 'N/A'; // Handle cases where the date is null or empty
+                }
+                const date = new Date(dateString);
+                return date.toLocaleDateString(); // Convert the date to a locale string
+            },
+        }
     }
 </script>
 

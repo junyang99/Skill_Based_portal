@@ -181,9 +181,14 @@ def get_all():
     }
     
 
-@app.route('/Application/<int:Position_ID>')
-def get_application(Position_ID):
-    applications = Application.query.filter_by(Position_ID=Position_ID).all()
+@app.route('/Application/<string:Role_Name>')
+def get_application(Role_Name):
+    open_position_data = Open_Position.query.filter_by(Role_Name=Role_Name).first()
+    app_position_id = open_position_data.Position_ID
+    applications = Application.query.filter_by(Position_ID=app_position_id).all()
+
+    start_date = open_position_data.Starting_Date
+    end_date = open_position_data.Ending_Date
 
     if applications:
         application_data = []
@@ -192,6 +197,9 @@ def get_application(Position_ID):
                 Staff_ID=application.Staff_ID).all()
             staff_skill_data = [skill.Skill_Name for skill in staff_skills]
 
+            staff_data = Staff.query.filter_by(Staff_ID=application.Staff_ID).first()
+            staff_name = staff_data.Staff_FName + ' ' + staff_data.Staff_LName
+
             application_data.append({
                 'Application_ID': application.Application_ID,
                 'Position_ID': application.Position_ID,
@@ -199,7 +207,10 @@ def get_application(Position_ID):
                 'Application_Date': application.Application_Date,
                 'Cover_Letter': application.Cover_Letter,
                 'Application_Status': application.Application_Status,
-                'Staff_Skill': staff_skill_data
+                'Staff_Skill': staff_skill_data,
+                'Staff_Name': staff_name,
+                'Start_Date': start_date,
+                'End_Date': end_date,
             })
 
         return jsonify({
