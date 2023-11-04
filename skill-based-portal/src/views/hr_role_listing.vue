@@ -27,7 +27,7 @@
                         </div>
 
                         <div class="col">
-                            <router-link :to="{ name: 'editListingHR', params: { roleName:roleData[0].role_name, role: 'hr' }}">
+                            <router-link :to="{ name: 'editListingHR', params: { roleName: role.role_name, role: 'hr' }}">
                                 <button class="application-btn float-end" style="background-color: var(--hr-actions);">
                                     <img src="../assets/icons/edit.svg">
                                     <p>EDIT</p>
