@@ -138,36 +138,6 @@ class Open_Position(db.Model):
             'Ending_Date': self.Ending_Date
         }
 
-# get staff by staff id
-@app.route('/Staff/<int:Staff_ID>', methods = ['POST', 'GET'])
-def find_by_staff_id(Staff_ID):
-    staff = Staff.query.filter_by(Staff_ID=Staff_ID).first()
-    if staff:
-        return jsonify({
-            'code': 200,
-            'data': staff.json()
-        })
-    return jsonify({
-        'code': 404,
-        'message': 'Staff not found.'
-    }), 404
-
-
-# get all staff
-@app.route('/Staff', methods = ['POST', 'GET'])
-def get_all():
-    staff_list = Staff.query.all()
-    if staff_list:
-        return jsonify({
-            'code': 200,
-            'data': {
-                'Staff': [staff.json() for staff in staff_list]
-            }
-        })
-    return {
-        'code': 400,
-        'message': 'There are no available staff members'
-    }
 
 @app.route('/create_application', methods=['POST'])
 def create_application():
@@ -262,72 +232,6 @@ def get_staff_roles(Staff_ID):
             'code': 500,
             'message': 'Internal Server Error: ' + str(e)
         }), 500
-
-
-# @app.route('/submit', methods=['POST'])
-# def submit():
-#     staff_id = request.form.get('staff_id')
-#     staff_fname = request.form.get('staff_fname')
-#     staff_lname = request.form.get('staff_lname')
-#     department = request.form.get('department')
-#     email = request.form.get('email')
-#     cover_letter = request.form.get('cover_letter')
-    
-    
-#     # Insert data into the application table, including the cover letter field
-#     try:
-#         cursor.execute('''
-#             INSERT INTO application
-#             (Application_ID, Position_ID, Staff_ID, Application_Date, Cover_Letter, Application_Status)
-#             VALUES (1, 1, %s, NOW(), %s, 1)
-#         ''', (staff_id, cover_letter))
-#         conn.commit()
-
-#         flash("Thank you! Your application has been submitted.")
-#     except mysql.connector.Error as err:
-#         print(f"Error: {err}")
-#         flash(f"Error: {err}")
-#         flash("An error occurred while submitting your application.")
-
-#     return redirect(url_for('view_staff', staff_id=staff_id))
-
-# @app.route('/view_staff/<staff_id>')
-# def view_staff(staff_id):
-#     # Create a new connection and cursor for this route
-#     try:
-#         conn = mysql.connector.connect(**db_config)
-#         cursor = conn.cursor()
-#     except mysql.connector.Error as err:
-#         print(f"Error: {err}")
-#         flash(f"Error: {err}")
-#         flash("An error occurred while connecting to the database.")
-#         return redirect(url_for('index'))
-    
-#     # Retrieve staff information from the database based on staff_id
-#     try:
-#         cursor.execute('''
-#             SELECT s.Staff_ID, s.Staff_FName, s.Staff_LName, s.Dept, s.Email, a.Cover_Letter
-#             FROM staff s
-#             LEFT JOIN `hr portal`.application a ON s.Staff_ID = a.Staff_ID
-#             WHERE s.Staff_ID = %s
-#         ''', (staff_id,))
-#         staff_info = cursor.fetchone()
-
-#         if staff_info:
-#             return render_template('view_staff.html', staff_id=staff_info[0], staff_fname=staff_info[1], staff_lname=staff_info[2], department=staff_info[3], email=staff_info[4], cover_letter=staff_info[5])
-#         else:
-#             flash("Staff not found")
-#             return redirect(url_for('index'))
-#     except mysql.connector.Error as err:
-#         print(f"Error: {err}")
-#         flash(f"Error: {err}")
-#         flash("An error occurred while fetching staff information.")
-#         return redirect(url_for('index'))
-#     finally:
-#         # Close the cursor and the connection
-#         cursor.close()
-#         conn.close()
-
 
 
 if __name__ == "__main__":

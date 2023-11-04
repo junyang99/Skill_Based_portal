@@ -112,18 +112,6 @@ import axios from 'axios';
 export default {
     name: 'roleApplication',
     methods: {
-        getResponse(){
-            const path = 'http://127.0.0.1:5016/Role-Application';
-            axios.get(path)
-            .then ((res) => {
-                console.log(res.data)
-                this.applicationData = res.data;
-            })
-            .catch ((err) => {
-                console.error(err);
-            });
-        },
-        
         sendCoverLetter() {
             // Prepare the application data to be sent in the request
             const cardid = this.$route.query.id;
@@ -152,7 +140,7 @@ export default {
     mounted() {
         console.log("mounted")
         console.log(this.$route.query.id)
-        axios.get('http://127.0.0.1:5016/Staff/160065')
+        axios.get('http://127.0.0.1:5008/Staff/160065')
                 .then(response => {
                     var data = response.data.data
                     // console.log(this.$route.query.id)
@@ -167,12 +155,10 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
-        // this.getResponse();
         document.title = "All in One";
     },
     created() {
         console.log("created")
-        // this.getResponse();
         console.log("working")
     },
 
