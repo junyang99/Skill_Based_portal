@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
                     <div class="container ms-auto">
                         <p class="header-btn">APPLY</p>
@@ -108,50 +111,55 @@
 </template>
 
 <script>
-import axios from 'axios';
-export default {
-    name: 'roleApplication',
-    props: ['applications'],
-    methods: {
-        getResponse(){
-            const path = 'http://127.0.0.1:5000/Role-Application';
-            axios.get(path)
-            .then ((res) => {
-                console.log(res.data)
-                this.applicationData = res.data;
-            })
-            .catch ((err) => {
-                console.error(err);
-            });
-        },
-        
-        sendCoverLetter() {
-            console.log("sending cover letter")
-            // Send the cover letter text to the Python backend
-            axios.post('http://127.0.0.1:5000/api/send-cover-letter', { coverLetter: this.coverLetter })
-                .then(response => {
-                // Handle the response from the Python backend
-                const successMessage = response.data.message; // Access the message property
-                console.log('Response from Python:', successMessage);
-                console.log(this.coverLetter)
-                console.log('Cover Letter sent to Python:', response.data);
+    import StaffNavbar from '@/components/staff_navbar.vue';
+    import HRNavbar from '@/components/hr_navbar.vue';
+
+    import axios from 'axios';
+
+    export default {
+        name: 'roleApplication',
+        props: ['applications'],
+        methods: {
+            getResponse(){
+                const path = 'http://127.0.0.1:5000/Role-Application';
+                axios.get(path)
+                .then ((res) => {
+                    console.log(res.data)
+                    this.applicationData = res.data;
                 })
-                .catch(error => {
-                // Handle errors
-                console.error('Error sending Cover Letter to Python:', error);
+                .catch ((err) => {
+                    console.error(err);
                 });
             },
-    },
-    mounted() {
-        console.log("mounted")
-        this.getResponse();
-        document.title = "All in One";
-    },
-    created() {
-        console.log("created")
-        this.getResponse();
-        console.log("working")
-    },
+            
+            sendCoverLetter() {
+                console.log("sending cover letter")
+                // Send the cover letter text to the Python backend
+                axios.post('http://127.0.0.1:5000/api/send-cover-letter', { coverLetter: this.coverLetter })
+                    .then(response => {
+                    // Handle the response from the Python backend
+                    const successMessage = response.data.message; // Access the message property
+                    console.log('Response from Python:', successMessage);
+                    console.log(this.coverLetter)
+                    console.log('Cover Letter sent to Python:', response.data);
+                    })
+                    .catch(error => {
+                    // Handle errors
+                    console.error('Error sending Cover Letter to Python:', error);
+                    });
+                },
+        },
+
+        mounted() {
+            console.log("mounted")
+            this.getResponse();
+            document.title = "All in One";
+        },
+        created() {
+            console.log("created")
+            this.getResponse();
+            console.log("working")
+        },
 
     data() {
         return {
@@ -171,6 +179,17 @@ export default {
         ],
         };
     },
+
+    components: {
+        StaffNavbar,
+        HRNavbar
+    },
+
+    computed: {
+        role() {
+            return this.$route.params.role;
+        }
+    }
 
 }
 </script>

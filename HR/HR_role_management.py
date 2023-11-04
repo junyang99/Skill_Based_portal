@@ -4,9 +4,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from sqlalchemy import and_
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:root@localhost:3306/HR Portal"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:root@localhost:3306/hr portal"
+CORS(app)
 db = SQLAlchemy(app)
 
 #data json:
@@ -27,8 +29,8 @@ class RoleSkill(db.Model):
 
 class Open_position(db.Model):
     Role_Name = db.Column(db.String(20), db.ForeignKey('role.role_name'), primary_key=True)
-    Starting_Date = db.Column(db.Date, nullable=False)
-    Ending_Date = db.Column(db.Date, nullable=False)
+    Starting_Date = db.Column(db.Date)
+    Ending_Date = db.Column(db.Date)
 
 def field_check(field):
     min_length = 2
@@ -126,6 +128,9 @@ def create_role():
         "message": "Please use a valid json request"
     }), 400
 
+
+
+
 @app.route('/HR/role_admin', methods=['GET'])
 def get_role():
 
@@ -133,6 +138,7 @@ def get_role():
     role_name_query = request.args.get('role_name')
     department_query = request.args.get('department')
     sort_by = request.args.get('sort_by')
+    exact_match = request.args.get('exact_match')
 
     # Query roles with optional filtering and sorting
     #example:
@@ -145,7 +151,13 @@ def get_role():
     filters = []
 
     if role_name_query:
-        filters.append(Role.role_name.like(f'%{role_name_query}%'))
+         # Check if 'exact_match' is provided in the query
+        if exact_match and exact_match.lower() == 'true':
+            # Filter by exact role name match
+            roles_query = roles_query.filter(Role.role_name == role_name_query)
+        else:
+            # Filter by partial role name match
+            filters.append(Role.role_name.like(f'%{role_name_query}%'))
 
     if department_query:
         filters.append(Role.department.like(f'%{department_query}%'))
@@ -180,8 +192,9 @@ def get_role():
         if (open_position):
             start_date = open_position[0].Starting_Date
             end_date = open_position[0].Ending_Date
-            if end_date > datetime.now().date():
-                status = "active"
+            if start_date is not None and end_date is not None:
+                if end_date > datetime.now().date():
+                    status = "active"
 
         #get all skills for each role
         skills = [skill.skill_name for skill in role.skills]
@@ -189,6 +202,7 @@ def get_role():
         #append all roles into roles_data list
         role_data.append({
             'department': role.department,
+            'description': role.role_desc,
             'skills': skills,
             'role_name': role.role_name,
             'start_date': start_date,
@@ -286,5 +300,5 @@ def update_role():
     }), 400
 
 if __name__ == '__main__':
-    app.run(port = 5000, debug=True)
-
+    CORS(app)
+    app.run(port = 5018, debug=True)
