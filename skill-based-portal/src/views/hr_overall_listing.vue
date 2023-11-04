@@ -64,7 +64,7 @@
                         <td>{{ formatDate(role.end_date) }}</td>
                         <td>{{ role.status }}</td>
                         <td>
-                            <router-link :to="{ name: 'roleListingHR', params: { roleName: role.role_name, role: 'hr' } }">
+                            <router-link :to="{ name: 'roleListingHR', params: { roleName: role.role_name, role: 'hr' }}">
                                 <img class="table-actions" src="../assets/icons/view.png" />
                                 <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
                             </router-link>

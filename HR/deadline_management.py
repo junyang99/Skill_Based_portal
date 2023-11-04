@@ -91,6 +91,40 @@ def date_check(starting_date, ending_date, role_name):
 
     return None
 
+def date_check2(starting_date, ending_date):
+    today = datetime.now().date()
+    
+    # Check for empty dates and convert to None
+    starting_date = None if not starting_date else starting_date
+    ending_date = None if not ending_date else ending_date
+
+    # Check for empty dates
+    if not starting_date or not ending_date:
+        return "Both starting date and ending date must be provided"
+    
+    acceptable_criteria = [None, ""]
+    
+    if starting_date in acceptable_criteria and ending_date in acceptable_criteria:
+        return None
+
+    try:
+        # Parse dates since they are not empty
+        starting_date_parsed = datetime.strptime(starting_date, '%Y-%m-%d').date()
+        ending_date_parsed = datetime.strptime(ending_date, '%Y-%m-%d').date()
+    except ValueError:
+        # This handles incorrect date formats and invalid dates such as "2022-01-00"
+        return "Invalid date format or value"
+
+    # Check if starting date has passed
+    if starting_date_parsed < today:
+        return "Starting date has passed"
+
+    # Check if ending_date is earlier than starting_date
+    if ending_date_parsed < starting_date_parsed:
+        return "Ending date is earlier than starting date"
+
+    return None
+
 
 def generate_position_id():
     last_position = Open_position.query.order_by(desc(Open_position.Position_ID)).first()
@@ -142,8 +176,8 @@ def add_open_position():
                 'data': {
                     'Position_ID': position_id,
                     'Role_Name': role_name,
-                    "Starting_Date": "Null",
-                    "Ending_Date": "Null"
+                    "Starting_Date": "None",
+                    "Ending_Date": "None"
                 }
             }), 201
 
@@ -160,245 +194,72 @@ def add_open_position():
             "message": "Please use a valid JSON request"
         }), 400
 
-
-
-
-
-# @app.route('/HR/open_position', methods=['POST'])
-# def create_position():
-#     if request.is_json:
-#         try:
-#             data = request.get_json()
-#             Role_Name = data.get('Role_Name')
-#             Starting_Date = data.get('Starting_Date')
-#             Ending_Date = data.get('Ending_Date')
-
-#             # Check if either Starting_Date or Ending_Date is provided but not both
-#             if (Starting_Date is None and Ending_Date is not None) or (Starting_Date is not None and Ending_Date is None):
-#                 return jsonify({
-#                     'message': 'Both starting date and ending date are required if one is provided',
-#                     'data': {}
-#                 }), 400
-
-#             # At this point, either both dates are provided or both are None
-#             starting_date_parsed = None
-#             ending_date_parsed = None
-
-#             if Starting_Date and Ending_Date:
-#                 starting_date_parsed = datetime.strptime(Starting_Date, '%Y-%m-%d').date()
-#                 ending_date_parsed = datetime.strptime(Ending_Date, '%Y-%m-%d').date()
-
-#             if not (Role.query.filter_by(role_name=Role_Name).first()):
-#                 return jsonify({
-#                     'message': 'Role Name does not exist',
-#                     'data': {"role_name": Role_Name}
-#                 }), 400
-
-#             Position_ID = generate_position_id()
-
-#             position = Open_position(Position_ID=Position_ID, Role_Name=Role_Name,
-#                                      Starting_Date=starting_date_parsed,
-#                                      Ending_Date=ending_date_parsed)
-#             db.session.add(position)
-#             db.session.commit()
-
-#             return jsonify({
-#                 'message': 'New Position created successfully',
-#                 'data': {'Position_ID': Position_ID}
-#             }), 201
-
-#         except Exception as e:
-#             print(str(e))
-#             return jsonify({
-#                 "code": 500,
-#                 "message": "Internal error: " + str(e)
-#             }), 500
-
-#     return jsonify({
-#         "code": 400,
-#         "message": "Please use a valid JSON request"
-#     }), 400
-
-
-
-
-
-
-
-
-
-
-
-# # Works Starts
-# @app.route('/HR/open_position', methods=['POST'])
-# def create_position():
-#     if request.is_json:
-#         # send data to relevant columnn
-#         try:
-#             data = request.get_json()
-#             Position_ID = data.get('Position_ID')
-#             Role_Name = data.get('Role_Name')
-#             Starting_Date = data.get('Starting_Date')
-#             Ending_Date = data.get('Ending_Date')
-
-#             # Check if position id is unique
-#             if Open_position.query.filter_by(Position_ID=Position_ID).first():
-#                 return jsonify({
-#                     'message': 'Position ID already exists',
-#                     'data': {"role_name": Position_ID}
-#                 }), 400
-
-#             # Check if role name is unique
-#             if not (Role.query.filter_by(role_name=Role_Name).first()):
-#                 return jsonify({
-#                     'message': 'Role Name does not exist',
-#                     'data': {"role_name": Role_Name}
-#                 }), 400
-
-#             fields_error = {}
-
-#             # position_id_error = field_check(Position_ID)
-#             # if position_id_error:
-#             #     fields_error['position_id'] = position_id_error
-
-#             # role_error = field_check(Role_Name)
-#             # if role_error:
-#             #     fields_error['role_name'] = role_error
-
-#             date_error = date_check(Starting_Date, Ending_Date, Role_Name)
-#             if date_error:
-#                 fields_error['date_error'] = date_error
-
-#             # Check if any field is missing
-#             if fields_error:
-#                 return jsonify({
-#                     'message': 'Required fields are missing or invalid',
-#                     'data': fields_error
-#                 }), 400
-
-#             # Create the position listing
-#             position = Open_position(Position_ID=Position_ID, Role_Name=Role_Name,
-#                                      Starting_Date=Starting_Date, Ending_Date=Ending_Date)
-#             db.session.add(position)
-
-#             db.session.commit()
-
-#             return jsonify({
-#                 'message': 'New Position created successfully'
-#             }), 201
-
-#         except Exception as e:
-#             print(str(e))
-
-#             return jsonify({
-#                 "code": 500,
-#                 "message": "internal error: " + str(e)
-#             }), 500
-
-#     # if reached here, not a JSON request.
-#     return jsonify({
-#         "code": 400,
-#         "message": "Please use a valid json request"
-#     }), 400
-
-# #End
-
-
-
-
-
-
-
-
-# @app.route('/HR/role_admin', methods=['PUT'])
-# def update_role():
-#     if request.is_json:
-#         try:
-#             data = request.get_json()
-#             title = data.get('role_name')
-#             description = data.get('description')
-#             department_name = data.get('department')
-#             skills = data.get('skills')
-
-#             role = Role.query.filter_by(role_name=title).first()
-
-#             if not role:
-#                 return jsonify({'message': 'Role not found'}), 404
-
-#             # field validation if it exists
-#             fields_error = {}
-
-#             if 'description' in data:
-#                 description_error = field_check(description)
-#                 if description_error:
-#                     fields_error['description'] = description_error
-
-#             if 'department' in data:
-#                 department_error = field_check(department_name)
-#                 if department_error:
-#                     fields_error['department'] = department_error
-
-#             if 'skills' in data:
-#                 if isinstance(skills, list):
-#                     skills_error = field_check(skills)
-#                     if skills_error:
-#                         fields_error['skills'] = skills_error
-#                 else:
-#                     fields_error['skills'] = "Skills should be a list"
-
-#             # Check if any field is missing
-#             if fields_error:
-#                 return jsonify({
-#                     'message': 'Required fields are missing or invalid',
-#                     'data': fields_error
-#                 }), 400
-
-#             # Update the role data with the new values
-#             if 'description' in data:
-#                 role.role_desc = description
-
-#             if 'department' in data:
-#                 role.department = department_name
-
-#             if 'skills' in data:
-#                 # Filter out skills that are already associated with the role
-#                 new_skills = [skill for skill in skills if skill not in [
-#                     s.skill_name for s in role.skills]]
-
-#                 # Add new skills
-#                 for skill in new_skills:
-#                     role_skill = RoleSkill(role_name=title, skill_name=skill)
-#                     db.session.add(role_skill)
-
-#             # Commit the changes to the database
-#             db.session.commit()
-
-#             # get skills for json response
-#             skills = [skill.skill_name for skill in role.skills]
-
-#             return jsonify({
-#                 'message': 'Role updated successfully',
-#                 'data': {
-#                     'role_name': role.role_name,
-#                     'role_desc': role.role_desc,
-#                     'department': role.department,
-#                     'skills': skills
-#                 }}), 200
-
-#         except Exception as e:
-#             print(str(e))
-
-#             return jsonify({
-#                 "code": 500,
-#                 "message": "internal error: " + str(e)
-#             }), 500
-
-#     # if reached here, not a JSON request.
-#     return jsonify({
-#         "code": 400,
-#         "message": "Please use a valid json request"
-#     }), 400
-
+@app.route('/HR/update_open_position', methods=['PUT'])
+def update_open_position():
+    if request.is_json:
+        try:
+            data = request.get_json()
+            role_name = data.get('role_name')
+            new_starting_date = data.get('starting_date')
+            new_ending_date = data.get('ending_date')
+
+            # Check if role_name exists
+            if not role_exists(role_name):
+                return jsonify({
+                    'message': 'Role name does not exist',
+                    'data': {"role_name": role_name}
+                }), 400
+
+            # Check if both dates are empty strings or None, then set them to None
+            if not new_starting_date and not new_ending_date:
+                new_starting_date = None
+                new_ending_date = None
+            else:
+                # Validate dates if not empty or None
+                date_error = date_check2(new_starting_date, new_ending_date)
+                if date_error:
+                    return jsonify({
+                        'message': 'Date validation error',
+                        'data': {'date_error': date_error}
+                    }), 400
+                # Convert dates from string to date object
+                new_starting_date = datetime.strptime(new_starting_date, '%Y-%m-%d').date()
+                new_ending_date = datetime.strptime(new_ending_date, '%Y-%m-%d').date()
+
+            # Find the open position by role_name
+            open_position = Open_position.query.filter_by(Role_Name=role_name).first()
+            if open_position is None:
+                return jsonify({'message': 'Open position not found for the given role name'}), 404
+
+            # Update open position fields
+            open_position.Starting_Date = new_starting_date
+            open_position.Ending_Date = new_ending_date
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            # Return the response with None for dates if they are None
+            return jsonify({
+                'message': 'Open position updated successfully',
+                'data': {
+                    'Position_ID': open_position.Position_ID,
+                    'Role_Name': open_position.Role_Name,
+                    'Starting_Date': None if open_position.Starting_Date is None else open_position.Starting_Date.isoformat(),
+                    'Ending_Date': None if open_position.Ending_Date is None else open_position.Ending_Date.isoformat()
+                }
+            }), 200
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                "code": 500,
+                "message": "Internal error: " + str(e)
+            }), 500
+    else:
+        return jsonify({
+            "code": 400,
+            "message": "Please use a valid JSON request"
+        }), 400
 
 if __name__ == '__main__':
     app.run(port=5015, debug=True)

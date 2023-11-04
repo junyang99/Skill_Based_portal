@@ -93,7 +93,6 @@
                                 </button>
                             </router-link>
                         </div>
-
                     </div>
             </div>
         </v-container>
@@ -148,6 +147,7 @@
             this.taggingOptions.push(tag)
             this.taggingSelected.push(tag)
             },
+
             formatDate(dateString) {
                 if (!dateString || dateString === 'null') {
                     return 'N/A'; // Handle cases where the date is null or empty
@@ -174,6 +174,7 @@
 
                     return sqlDate;
                 },
+
             fetchRoleDetails() {
                 // Get the roleName from the route's parameters
                 const roleName = this.$route.params.roleName;
@@ -199,6 +200,7 @@
                     });
                 }
                 },
+
             fetchOptions() {
                 axios.get('http://localhost:5011/Role_Skill')
                     .then(response => {
@@ -216,10 +218,11 @@
                         console.error('Failed to fetch options:', error);
                     });
             },
+
             saveData() {
-                // Here you can implement your Axios POST request to save the data
-                const startDateSQL = this.revertToSQLDateFormat(this.input.startDate);
-                const endDateSQL = this.revertToSQLDateFormat(this.input.endDate);
+                // // Here you can implement your Axios POST request to save the data
+                // const startDateSQL = this.revertToSQLDateFormat(this.input.startDate);
+                // const endDateSQL = this.revertToSQLDateFormat(this.input.endDate);
 
                 // Here you can implement your Axios POST request to save the data
                 axios.put('http://localhost:5018/HR/role_admin', {
@@ -227,12 +230,39 @@
                     department: this.input.department,
                     description: this.input.roleDescription,
                     skills: this.selected.map(skill => skill.name),
-                    start_date: startDateSQL,
-                    end_date: endDateSQL,
+                    starting_date: this.input.startDate,
+                    ending_date: this.input.endDate,
                 })
+                
                 .then(response => {
                     // Handle the response (e.g., show a success message)
                     console.log('Data saved successfully:', response.data);
+
+                    console.log(this.input.startDate);
+                    console.log(this.input.endDate);
+
+                    axios.put("http://localhost:5015/HR/update_open_position", {
+                        role_name: this.input.roleName,
+                        starting_date: this.input.startDate,
+                        ending_date: this.input.endDate,
+                    })
+
+                    .then(response2 => {
+                        // Handle the API response here (e.g., show a success message)
+                        console.log("API response:", response2.data);
+                        window.alert("Position updated successfully!");
+                    })
+
+                    .catch(error2 => {
+                        // Handle API request errors (e.g., show an error message)
+                        if (error2.response && error2.response.status === 400 && error2.response.data.message) {
+                            // Handle the 400 Bad Request error with an error message
+                            window.alert("Error creating role: " + error2.response.data.message);
+                        } else {
+                            // Handle other errors
+                            window.alert("Error creating role: " + error2.message);
+                        }
+                    })
                 })
                 .catch(error => {
                     // Handle errors (e.g., show an error message)
