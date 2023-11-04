@@ -144,32 +144,38 @@ def get_all_role_listing():
         # Create a list to store the joined data
         joined_data = []
 
+        current_date = datetime.now().date()
+
         for role_listing_item in role_listing:
             # Find the corresponding Role object by Role_Name
             role = Role.query.filter_by(Role_Name=role_listing_item.Role_Name).first()
 
             if role:
-                data = {
-                    "Ending_Date": role_listing_item.Ending_Date,
-                    "Position_ID": role_listing_item.Position_ID,
-                    "Role_Name": role_listing_item.Role_Name,
-                    "Starting_Date": role_listing_item.Starting_Date,
-                    "Role_Desc": role.Role_Desc,  
-                    "Department": role.Department  
-                }
-                joined_data.append(data)
+                ending_date = role_listing_item.Ending_Date
+                if ending_date > current_date:
+                    data = {
+                        "Ending_Date": role_listing_item.Ending_Date,
+                        "Position_ID": role_listing_item.Position_ID,
+                        "Role_Name": role_listing_item.Role_Name,
+                        "Starting_Date": role_listing_item.Starting_Date,
+                        "Role_Desc": role.Role_Desc,
+                        "Department": role.Department
+                    }
+                    joined_data.append(data)
 
-        return jsonify({
-            'code': 200,
-            'data': {
-                'Role_Listing': joined_data
-            }
-        }), 200
+        if joined_data:
+            return jsonify({
+                'code': 200,
+                'data': {
+                    'Role_Listing': joined_data
+                }
+            }), 200
 
     return jsonify({
         'code': 404,
         'message': 'There are no available role listings.'
     }), 404
+
 
 
 
