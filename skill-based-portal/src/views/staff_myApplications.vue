@@ -59,7 +59,7 @@ import axios from 'axios';
             document.title = "All in One";
         },
         created() {
-            axios.get('http://127.0.0.1:5008/Staff/140001/applications') 
+            axios.get('http://127.0.0.1:5016/Staff/applications/160065') 
             .then(response => {
                 this.applications = response.data.data;
                 console.log('LOGGING')

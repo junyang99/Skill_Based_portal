@@ -126,19 +126,18 @@ export default {
         
         sendCoverLetter() {
             // Prepare the application data to be sent in the request
+            const cardid = this.$route.query.id;
             const applicationData = {
-                "Application_ID": 1,
-                "Position_Id": 1,
-                "Staff_Id": 140001,
-                "Application_Date": "2023-11-02",
-                "Cover_Letter": "thissss",
+                "Position_ID":  cardid,
+                "Staff_ID": this.applicationData.staffID,
+                "Application_Date": "2023-11-04",
+                "Cover_Letter": this.coverLetter,
                 "Application_Status": 1
             }
 
             // Send a POST request to the Flask API to submit the application
             console.log("sending")
-            console.log(applicationData)
-            axios.post('http://127.0.0.1:5016/submit-application', applicationData)
+            axios.post('http://127.0.0.1:5016/create_application', applicationData)
             .then(() => {
             // Handle the successful submission, e.g., show a success message
             console.log('Application submitted successfully');
@@ -152,13 +151,14 @@ export default {
     },
     mounted() {
         console.log("mounted")
-        axios.get('http://127.0.0.1:5016/Staff/140001')
+        console.log(this.$route.query.id)
+        axios.get('http://127.0.0.1:5016/Staff/160065')
                 .then(response => {
                     var data = response.data.data
                     // console.log(this.$route.query.id)
                     const position_id = this.$route.query.id
                     this.cardid = position_id
-                    this.applicationData.staffID = 140001
+                    this.applicationData.staffID = 160065
                     this.applicationData.staffName = data.Staff_FName + " " + data.Staff_LName
                     this.applicationData.staffEmail = data.Email
                     this.applicationData.staffCountry = data.Country

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import re
 import mysql.connector
+from flask_cors import cross_origin
 
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -9,9 +10,9 @@ from view_access_control import Access_Control
 from datetime import datetime
 
 app = Flask(__name__)
-
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/HR Portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/HR Portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -172,7 +173,6 @@ def get_all():
 def create_application():
     if request.method == 'POST':
         data = request.get_json()
-
         # Extract data from the request
         position_id = data.get('Position_ID')
         staff_id = data.get('Staff_ID')
@@ -201,7 +201,6 @@ def get_staff_applications(Staff_ID):
     try:
         # Retrieve applications for the specified Staff_ID
         applications = Application.query.filter_by(Staff_ID=Staff_ID).all()
-
         if applications:
             # Create a list to store the combined data
             combined_data = []
