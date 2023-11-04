@@ -11,7 +11,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/HR Portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/HR Portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -46,8 +46,8 @@ class Application(db.Model):
     Cover_Letter = db.Column(db.String(10000), nullable=False)
     Application_Status = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, Application_ID, Position_ID, Staff_ID, Application_Date, Cover_Letter, Application_Status):
-        self.Application_ID = Application_ID
+    def __init__(self, Position_ID, Staff_ID, Application_Date, Cover_Letter, Application_Status):
+        # self.Application_ID = Application_ID
         self.Position_ID = Position_ID
         self.Staff_ID = Staff_ID
         self.Application_Date = Application_Date
@@ -168,32 +168,35 @@ def get_all():
         'message': 'There are no available staff members'
     }
 
-# @app.route('/submit-application', methods=['POST', 'GET'])
-# def submit_application():
-#     if request.method == 'POST':
-#         try:
-#             # Get data from the request
-#             data = request.get_json()
-#             application_id = data.get('Application_ID')
-#             position_id = data.get('Position_Id') # Replace with the actual field name for position ID
-#             staff_id = data.get('Staff_Id')  # Replace with the actual field name for staff ID
-#             application_date = data.get('Application_Date')
-#             cover_letter = data.get('Cover_Letter')  # Replace with the actual field name for cover letter
-#             application_status = data.get('Application_Status')  # Set the application status as needed
+@app.route('/create_application', methods=['POST'])
+def create_application():
+    if request.method == 'POST':
+        data = request.get_json()
 
-#             # Create a new application object
-#             new_application = Application(Application_ID=application_id, Position_ID=position_id, Staff_ID=staff_id, Application_Date= application_date,Cover_Letter=cover_letter, Application_Status=application_status)
+        # Extract data from the request
+        position_id = data.get('Position_ID')
+        staff_id = data.get('Staff_ID')
+        application_date = data.get('Application_Date')
+        cover_letter = data.get('Cover_Letter')
+        application_status = data.get('Application_Status')
 
-#             # Add the new application to the database
-#             db.session.add(new_application)
-#             db.session.commit()
+        # Create a new Application instance
+        new_application = Application(
+            Position_ID=position_id,
+            Staff_ID=staff_id,
+            Application_Date=application_date,
+            Cover_Letter=cover_letter,
+            Application_Status=application_status
+        )
 
-#             return jsonify({'message': 'Application submitted successfully'})
-#         except Exception as e:
-#             return jsonify({'error': str(e)}), 500
+        # Add the new application to the database
+        db.session.add(new_application)
+        db.session.commit()
+
+        return jsonify({'message': 'Application created successfully'})
     
 
-@app.route('/Staff/<int:Staff_ID>/applications', methods=['GET'])
+@app.route('/Staff/applications/<int:Staff_ID>', methods=['GET'])
 def get_staff_applications(Staff_ID):
     try:
         # Retrieve applications for the specified Staff_ID
@@ -210,11 +213,12 @@ def get_staff_applications(Staff_ID):
                 # Get the role associated with the position
                 role = Role.query.get(position.Role_Name)
 
-                # Construct a JSON object with role_name, dept, and application_date
+                # Construct a JSON object with role_name, dept, application_date, and status
                 combined_data.append({
                     'role_name': role.Role_Name,
                     'dept': role.Department,
-                    'application_date': app.Application_Date
+                    'application_date': app.Application_Date,
+                    'application_status': app.Application_Status,  # Include Application_Status
                 })
 
             return jsonify({
@@ -232,6 +236,7 @@ def get_staff_applications(Staff_ID):
             'code': 500,
             'message': 'Internal Server Error: ' + str(e)
         }), 500
+
     
 @app.route('/Staff/<int:Staff_ID>/roles', methods=['GET'])
 def get_staff_roles(Staff_ID):
