@@ -192,8 +192,9 @@ def get_role():
         if (open_position):
             start_date = open_position[0].Starting_Date
             end_date = open_position[0].Ending_Date
-            if end_date > datetime.now().date():
-                status = "active"
+            if start_date is not None and end_date is not None:
+                if end_date > datetime.now().date():
+                    status = "active"
 
         #get all skills for each role
         skills = [skill.skill_name for skill in role.skills]
