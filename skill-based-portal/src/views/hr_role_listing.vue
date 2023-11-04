@@ -103,10 +103,7 @@
 
                                 <!-- <td>{{ applicant.dateSubmitted }}</td> -->
                                 <td>
-                                    <!-- <router-link :to="{ name: 'viewApplicationHR'}"> -->
-                                        <img class="table-actions" src="../assets/icons/view.png" />
-                                        <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
-                                    <!-- </router-link> -->
+                                    <img class="table-actions" src="../assets/icons/view.png" />
                                     <img class="table-actions" src="../assets/icons/edit.png" />
                                     <img class="table-actions" src="../assets/icons/delete.png" />
                                 </td>

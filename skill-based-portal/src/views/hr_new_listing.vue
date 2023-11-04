@@ -156,12 +156,24 @@ import axios from 'axios'
             // Make the API request using Axios
             axios.post("http://localhost:5018/HR/role_admin", postData)
                 .then(response => {
-                // Handle the API response here (e.g., show a success message)
-                console.log("API response:", response.data);
+                    // Handle the API response here (e.g., show a success message)
+                    console.log("API response:", response.data);
                     window.alert("Role created successfully!");
+
+                    // console.log(postData)
+
+                    // axios.post("http://localhost:5015/HR/add_open_position", postData)
+
                 })
+
+                // .then(response2 => {
+                //     // Handle the API response here (e.g., show a success message)
+                //     console.log("API response:", response2.data);
+                //     window.alert("Role created successfully!");
+                // })
+
                 .catch(error => {
-                // Handle API request errors (e.g., show an error message)
+                    // Handle API request errors (e.g., show an error message)
                     if (error.response && error.response.status === 400 && error.response.data.message) {
                         // Handle the 400 Bad Request error with an error message
                         window.alert("Error creating role: " + error.response.data.message);
@@ -169,7 +181,18 @@ import axios from 'axios'
                         // Handle other errors
                         window.alert("Error creating role: " + error.message);
                     }
-                    });
+                })
+
+                // .catch(error2 => {
+                //     // Handle API request errors (e.g., show an error message)
+                //     if (error2.response && error2.response.status === 400 && error2.response.data.message) {
+                //         // Handle the 400 Bad Request error with an error message
+                //         window.alert("Error creating role: " + error2.response.data.message);
+                //     } else {
+                //         // Handle other errors
+                //         window.alert("Error creating role: " + error2.message);
+                //     }
+                // });
             },
         }
     }
