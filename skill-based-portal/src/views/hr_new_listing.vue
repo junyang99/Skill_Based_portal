@@ -160,17 +160,30 @@ import axios from 'axios'
                     console.log("API response:", response.data);
                     window.alert("Role created successfully!");
 
-                    // console.log(postData)
+                    console.log(postData)
 
-                    // axios.post("http://localhost:5015/HR/add_open_position", postData)
+                    axios.post("http://localhost:5015/HR/add_open_position", postData)
+
+                    .then(response2 => {
+                        // Handle the API response here (e.g., show a success message)
+                        console.log("API response:", response2.data);
+                        window.alert("Role created successfully!");
+                    })
+
+                    .catch(error2 => {
+                        // Handle API request errors (e.g., show an error message)
+                        if (error2.response && error2.response.status === 400 && error2.response.data.message) {
+                            // Handle the 400 Bad Request error with an error message
+                            window.alert("Error creating role: " + error2.response.data.message);
+                        } else {
+                            // Handle other errors
+                            window.alert("Error creating role: " + error2.message);
+                        }
+                    })
 
                 })
 
-                // .then(response2 => {
-                //     // Handle the API response here (e.g., show a success message)
-                //     console.log("API response:", response2.data);
-                //     window.alert("Role created successfully!");
-                // })
+                
 
                 .catch(error => {
                     // Handle API request errors (e.g., show an error message)
@@ -182,17 +195,6 @@ import axios from 'axios'
                         window.alert("Error creating role: " + error.message);
                     }
                 })
-
-                // .catch(error2 => {
-                //     // Handle API request errors (e.g., show an error message)
-                //     if (error2.response && error2.response.status === 400 && error2.response.data.message) {
-                //         // Handle the 400 Bad Request error with an error message
-                //         window.alert("Error creating role: " + error2.response.data.message);
-                //     } else {
-                //         // Handle other errors
-                //         window.alert("Error creating role: " + error2.message);
-                //     }
-                // });
             },
         }
     }

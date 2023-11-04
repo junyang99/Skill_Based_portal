@@ -136,9 +136,10 @@ import axios from 'axios';
                         console.log(response.data.roles)
                         this.allRoles = response.data.roles; // Assuming the API response has a "Roles" key
                     })
+
                     .catch(error => {
                         console.error('Failed to fetch roles:', error);
-                    });
+                    })
             },
         },
     }
