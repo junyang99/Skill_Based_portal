@@ -217,7 +217,7 @@ def get_staff_applications(Staff_ID):
                     'role_name': role.Role_Name,
                     'dept': role.Department,
                     'application_date': app.Application_Date,
-                    'application_status': app.Application_Status,  # Include Application_Status
+                    'application_status': app.Application_Status,  # Include Application_Status 0: pending, 1: accepted, 2: rejected
                 })
 
             return jsonify({
