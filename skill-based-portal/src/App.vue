@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+      <!-- <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
           <nav :class="{ 'hr-mode': isHRMode }">
             <ul style="margin-bottom: 0;">
                 <li> <img src="@/assets/logo.png" class="logo"> </li>
@@ -70,12 +70,12 @@
                 </div>
                 
             </ul>
-          </nav>
+          </nav> -->
 
       <main>
-      <div>
-          <router-view></router-view>
-      </div>
+        <div>
+            <router-view></router-view>
+        </div>
       </main>
   </div>
 </template>

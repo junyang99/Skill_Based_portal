@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
 
                 <div class="container ms-auto">
@@ -25,22 +28,6 @@
                         </div>
         
                         <div class="col-6">
-                            <!-- <div class="select-btn" @click="handleDropdown">
-                                <span class="btn-text">Select Department</span>
-                                <span class="arrow-dwn">
-                                    <i class="fa-solid fa-chevron-down"></i>
-                                </span>
-                            </div> -->
-
-                            <!-- <ul class="list-items"> -->
-                                <!-- Use v-for to loop through departments and generate list items -->
-                                <!-- <li class="item" v-for="(department, index) in departments" :key="index">
-                                    <span class="checkbox">
-                                    <i class="fa-solid fa-check check-icon"></i>
-                                    </span>
-                                    <span class="item-text">{{ department }}</span>
-                                </li>
-                            </ul> -->
 
                             <VueMultiselect
                                 v-model="selectedDepartments"
@@ -93,9 +80,12 @@
     import axios from 'axios';
     import { handleDropdown } from "../assets/js/dropdown.js";
     import VueMultiselect from 'vue-multiselect'
+    import StaffNavbar from '@/components/staff_navbar.vue';
+    import HRNavbar from '@/components/hr_navbar.vue';
 
     export default {
         name: 'overallListing',
+
         methods: {
             handleDropdown,
             async searchRoles() {
@@ -145,8 +135,11 @@
             }
         },
         components: {
-            VueMultiselect
+            VueMultiselect,
+            StaffNavbar,
+            HRNavbar
         },
+
         mounted() {
             document.title = "All in One";
         },
@@ -155,78 +148,78 @@
         },
         data() {
             return {
-            searchInput: "",
-            cardData: [
-                {
-                id: 1,
-                title: "Account Manager",
-                department: "Sales",
-                deadline: "15 October 2023",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
+                searchInput: "",
+                cardData: [
+                    {
+                    id: 1,
+                    title: "Account Manager",
+                    department: "Sales",
+                    deadline: "15 October 2023",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    },
 
-                {
-                id: 2,
-                title: "Finance Manager",
-                department: "Finance",
-                deadline: "15 October 2023",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
+                    {
+                    id: 2,
+                    title: "Finance Manager",
+                    department: "Finance",
+                    deadline: "15 October 2023",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    },
 
-                {
-                id: 3,
-                title: "Developer",
-                department: "IT",
-                deadline: "15 October 2023",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
+                    {
+                    id: 3,
+                    title: "Developer",
+                    department: "IT",
+                    deadline: "15 October 2023",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    },
 
-                {
-                id: 1,
-                title: "Account Manager",
-                department: "Sales",
-                deadline: "15 October 2023",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
+                    {
+                    id: 1,
+                    title: "Account Manager",
+                    department: "Sales",
+                    deadline: "15 October 2023",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    },
 
-                {
-                id: 2,
-                title: "Account Manager",
-                department: "Sales",
-                deadline: "15 October 2023",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
+                    {
+                    id: 2,
+                    title: "Account Manager",
+                    department: "Sales",
+                    deadline: "15 October 2023",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    },
 
-                {
-                id: 3,
-                title: "Account Manager",
-                department: "Sales",
-                deadline: "15 October 2023",
-                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-            ],
-            selectedDepartments: null,
+                    {
+                    id: 3,
+                    title: "Account Manager",
+                    department: "Sales",
+                    deadline: "15 October 2023",
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                    },
+                ],
+                selectedDepartments: null,
 
-            departments: [
-                // {name: 'Chairman', code: 'CH'},
-                // {name: 'CEO', code: 'CEO'},
-                // {name: 'Sales', code: 'SA'},
-                // {name: 'Engineering', code: 'EN'},
-                // {name: 'HR', code: 'HR'},
-                // {name: 'Finance', code: 'FIN'},
-                // {name: 'Consultancy', code: 'CO'},
-                // {name: 'Solutioning', code: 'SO'},
-                // {name: 'IT', code: 'IT'}
-                "Chairman",
-                "CEO",
-                "Sales",
-                "Engineering",
-                "HR",
-                "Finance",
-                "Consultancy",
-                "Solutioning",
-                "IT"
-            ],
+                departments: [
+                    // {name: 'Chairman', code: 'CH'},
+                    // {name: 'CEO', code: 'CEO'},
+                    // {name: 'Sales', code: 'SA'},
+                    // {name: 'Engineering', code: 'EN'},
+                    // {name: 'HR', code: 'HR'},
+                    // {name: 'Finance', code: 'FIN'},
+                    // {name: 'Consultancy', code: 'CO'},
+                    // {name: 'Solutioning', code: 'SO'},
+                    // {name: 'IT', code: 'IT'}
+                    "Chairman",
+                    "CEO",
+                    "Sales",
+                    "Engineering",
+                    "HR",
+                    "Finance",
+                    "Consultancy",
+                    "Solutioning",
+                    "IT"
+                ],
             };
         },
         computed: {
@@ -236,7 +229,11 @@
                 } else {
                     return this.cardData;
                 }
-            }   
+            },   
+
+            role() {
+                return this.$route.params.role;
+            }
         }
     }
 </script>

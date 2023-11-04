@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
                     <div class="container ms-auto">
                         <p class="header-btn">Role Listing</p>
@@ -81,13 +84,18 @@
 </template>
 
 <script>
-import VueMultiselect from 'vue-multiselect'
-import axios from 'axios'
+    import VueMultiselect from 'vue-multiselect'
+    import axios from 'axios'
+    import StaffNavbar from '@/components/staff_navbar.vue';
+    import HRNavbar from '@/components/hr_navbar.vue';
+
  
     export default {
         name: 'roleApplication',
         components: {
             VueMultiselect,
+            StaffNavbar,
+            HRNavbar
         },
         mounted() {
             document.title = "All in One";
@@ -95,6 +103,12 @@ import axios from 'axios'
         created() {
             console.log("working");
             this.fetchSkills();
+        },
+
+        computed: {
+            role() {
+                return this.$route.params.role;
+            }
         },
 
         data() {

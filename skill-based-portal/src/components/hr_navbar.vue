@@ -8,19 +8,19 @@
                   <div class="staff-links" v-if="!isHRMode">
   
                       <li class="nav-link">
-                      <router-link :to="{ name: 'overallListing'}">
+                      <router-link :to="{ name: 'overallListing', params: { role: 'hr' }}">
                           <a href="./views/overall_listing.vue">Role Listing</a>
                       </router-link>
                       </li>
   
                       <li class="nav-link">
-                      <router-link :to="{ name: 'myApplications'}">
+                      <router-link :to="{ name: 'myApplications', params: { role: 'hr' }}">
                           <a href="./views/myApplications.vue">My Applications</a>
                       </router-link>
                       </li>
   
                       <li class="nav-link">
-                      <router-link :to="{ name: 'myProfile'}">
+                      <router-link :to="{ name: 'myProfile', params: { role: 'hr' }}">
                           <a href="./views/myProfile.vue">My Profile</a>
                       </router-link>
                       </li>
@@ -31,13 +31,13 @@
                   <div class="hr-links" v-else>
   
                       <li class="nav-link">
-                      <router-link :to="{ name: 'overallListingHR'}">
+                      <router-link :to="{ name: 'overallListingHR', params: { role: 'hr' }}">
                           <a href="./views/hr_overall_listing.vue">All Roles</a>
                       </router-link>
                       </li>
   
                       <li class="nav-link">
-                      <router-link :to="{ name: 'newListingHR'}">
+                      <router-link :to="{ name: 'newListingHR', params: { role: 'hr' }}">
                           <a href="./views/hr_new_listing.vue">New Listing</a>
                       </router-link>
                       </li>
@@ -49,24 +49,30 @@
                       <label for="switch" class="toggle-label"> Staff Mode </label>
   
                       <label class="switch">
-                      <input type="checkbox" name="switch" v-model="isHRMode" @click="updateMode">
-                      <span class="slider round"></span>
+                        <input type="checkbox" name="switch" v-model="isHRMode" @click="updateMode">
+                        <span class="slider round"></span>
                       </label>
   
                       <label for="switch" class="toggle-label"> HR Mode </label>
   
                   </div>
   
-                  <div id="nav-user">
-                      <li id="nav-user">
-                      <img src="@/assets/icons/user.png" style="height: 40px; width: auto;">
-                      </li>
-  
-                      <li id="nav-user">
-                      <div> {{ userName }} </div>
-                      <div> {{ userRole }} </div>
-                      </li>
-                  </div>
+                    <div id="nav-user">
+                        <li id="nav-user">
+                        <img src="@/assets/icons/user.png" style="height: 40px; width: auto;">
+                        </li>
+    
+                        <li id="nav-user">
+                        <div> {{ userName }} </div>
+                        <div> {{ userRole }} </div>
+                        </li>
+                    </div>
+
+                    <div class="logout">
+                      <router-link :to="{ name: 'loginPage'}">
+                        Logout
+                      </router-link>
+                    </div>
                   </div>
                   
               </ul>
@@ -89,21 +95,28 @@
   data() {
     return {
       isHRMode: false,
-      userName: "Ben Tan",
+      userName: "John Tan",
       userRole: "HR",
     };
   },
-  
+
+  created() {
+    this.isHRMode = this.$route.name.includes('HR');
+  },
+
   methods: {
-      updateMode() {
-        this.isHRMode = !this.isHRMode;
-        this.$router.push(this.isHRMode ? { name: 'overallListingHR' } : { name: 'overallListing' });
-      },
-    },
+    updateMode() {
+      this.isHRMode = !this.isHRMode;
+      const routeName = this.isHRMode ? 'overallListingHR' : 'overallListing';
+      this.$router.push({ name: routeName, params: { role: 'hr' } });
+    }
+  },
+
     beforeRouteUpdate(to, from, next) {
       this.isHRMode = to.name === 'overallListingHR';
       next();
-    },
+    }
+
   };
   </script>
   

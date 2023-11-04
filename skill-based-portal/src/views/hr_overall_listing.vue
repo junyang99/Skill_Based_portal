@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
                 <div class="container ms-auto">
                     <div class="page-head">
@@ -29,7 +32,6 @@
                         </div>
 
                         <div class="col-3 create-new">
-                            <!-- <router-link :to="{ name: 'roleApplication', params: { id: roleData[0].id } }"> -->
                             <router-link :to="{ name: 'newListingHR' }">
                                 <button class="create-new-btn">Create New</button>
                             </router-link>
@@ -62,14 +64,14 @@
                         <td>{{ formatDate(role.end_date) }}</td>
                         <td>{{ role.status }}</td>
                         <td>
-                            <router-link :to="{ name: 'roleListingHR', params: { roleName: role.role_name } }">
+                            <router-link :to="{ name: 'roleListingHR', params: { roleName: role.role_name, role: 'hr' } }">
                                 <img class="table-actions" src="../assets/icons/view.png" />
                                 <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
                             </router-link>
 
-                            <!-- <router-link :to="{ name: 'editListingHR', params: { positionID: role.positionID } }"> -->
+                            <router-link :to="{ name: 'editListingHR', params: { roleName: role.role_name, role: 'hr' }}">
                                 <img class="table-actions" src="../assets/icons/edit.png" />
-                            <!-- </router-link> -->
+                            </router-link>
 
                             <img class="table-actions" src="../assets/icons/delete.png" />
                         </td>
@@ -82,9 +84,17 @@
     </v-app>
 </template>
 <script>
-import axios from 'axios';
+    import axios from 'axios';
+    import StaffNavbar from '@/components/staff_navbar.vue';
+    import HRNavbar from '@/components/hr_navbar.vue';
+
     export default {
         name: 'overallListingHR',
+
+        components: {
+            StaffNavbar,
+            HRNavbar
+        },
 
         mounted() {
             document.title = "All in One";
@@ -102,6 +112,7 @@ import axios from 'axios';
                 activeOnly: false,
             };
         },
+
         computed: {
             filteredRoles() {
                 let filteredRoles = this.allRoles;
@@ -118,7 +129,12 @@ import axios from 'axios';
 
                 return filteredRoles;
                 },
-            },
+
+            role() {
+                return this.$route.params.role;
+            }
+        },
+
         methods: {
             // Function to format the date string without the time
             formatDate(dateString) {
@@ -128,6 +144,7 @@ import axios from 'axios';
                 const date = new Date(dateString);
                 return date.toLocaleDateString(); // Convert the date to a locale string
             },
+
             fetchRoles() {
                 // Make an HTTP GET request to fetch roles from the API
                 axios.get('http://localhost:5018/HR/role_admin')
@@ -141,9 +158,10 @@ import axios from 'axios';
                         console.error('Failed to fetch roles:', error);
                     })
             },
-        },
+    },
     }
 </script>
+
 <style scoped>
     @import '@/assets/styling/staff_overall_application.css';
     @import '@/assets/styling/hr_overall_listing.css';

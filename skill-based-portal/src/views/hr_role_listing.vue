@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
 
                 <div class="container ms-auto">
@@ -24,7 +27,7 @@
                         </div>
 
                         <div class="col">
-                            <router-link :to="{ name: 'editListingHR'}">          
+                            <router-link :to="{ name: 'editListingHR', params: { roleName:roleData[0].role_name, role: 'hr' }}">
                                 <button class="application-btn float-end" style="background-color: var(--hr-actions);">
                                     <img src="../assets/icons/edit.svg">
                                     <p>EDIT</p>
@@ -119,10 +122,17 @@
 </template>
 
 <script>
-import axios from 'axios';
+    import axios from 'axios';
+    import StaffNavbar from '@/components/staff_navbar.vue';
+    import HRNavbar from '@/components/hr_navbar.vue';
 
     export default {
         name: 'specificListing',
+
+        components: {
+            StaffNavbar,
+            HRNavbar
+        },
 
         mounted() {
             document.title = "All in One";
@@ -186,7 +196,13 @@ import axios from 'axios';
                 const date = new Date(dateString);
                 return date.toLocaleDateString(); // Convert the date to a locale string
             },
-        }
+        },
+
+        computed: {
+            role() {
+                return this.$route.params.role;
+            }
+        },
     }
 </script>
 

@@ -4,11 +4,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from sqlalchemy import and_, or_, desc
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:root@localhost:3306/hr portal"
 db = SQLAlchemy(app)
-
+CORS(app)
 
 class Role(db.Model):
     role_name = db.Column(db.String(20), primary_key=True)

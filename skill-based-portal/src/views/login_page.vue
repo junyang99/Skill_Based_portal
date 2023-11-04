@@ -1,12 +1,13 @@
 <template>
-    <router-link :to="{ name: 'overallListing'}">
-        <button>Staff</button>
+    <router-link :to="{ name: 'overallListing', params: { role: 'staff' }}">
+        <button type="button" class="btn btn-outline-primary">Staff Login</button>
     </router-link>
 
     <br><br><br>
 
-    <button>HR</button>
-
+    <router-link :to="{ name: 'overallListing', params: { role: 'hr' }}">
+        <button type="button" class="btn btn-outline-primary">HR Login</button>
+    </router-link>
     <main>
         <div>
             <router-view></router-view>
@@ -16,6 +17,6 @@
 
 <script>
 export default {
-        name: 'loginTest'
+        name: 'loginPage'
     }
 </script>
