@@ -91,16 +91,18 @@ def get_open_roles_for_dept():
 
                 if opening_role_info.Department in department_names:
                     # Use the correct date format for the Ending_Date
-                    ending_date = datetime.strptime(opening["Ending_Date"], '%a, %d %b %Y %H:%M:%S %Z')
-                    if ending_date > current_date:  # Check if the end date is in the future
-                        filtered_open_positions.append({
-                            "Ending_Date": ending_date.strftime('%Y-%m-%d'),  # Convert back to your desired format
-                            "Position_ID": opening["Position_ID"],
-                            "Role_Name": opening["Role_Name"],
-                            "Starting_Date": opening["Starting_Date"],
-                            "Department": opening_role_info.Department,
-                            "Role_Desc": opening_role_info.Role_Desc
-                        })
+                    ending_date = opening["Ending_Date"]
+                    if ending_date:
+                        ending_date = datetime.strptime(ending_date, '%a, %d %b %Y %H:%M:%S %Z')
+                        if ending_date > current_date:  # Check if the end date is in the future
+                            filtered_open_positions.append({
+                                "Ending_Date": ending_date.strftime('%Y-%m-%d'),  # Convert back to your desired format
+                                "Position_ID": opening["Position_ID"],
+                                "Role_Name": opening["Role_Name"],
+                                "Starting_Date": opening["Starting_Date"],
+                                "Department": opening_role_info.Department,
+                                "Role_Desc": opening_role_info.Role_Desc
+                            })
 
             if filtered_open_positions:
                 return jsonify({
@@ -142,19 +144,21 @@ def search_for_roles():
             for opening in open_positions:
                 opening_role_name = opening['Role_Name']
                 opening_role_info = Role.query.filter_by(Role_Name=opening_role_name).first()
+                ending_date = opening["Ending_Date"]
 
+                if ending_date:
                 # Use the correct date format for the Ending_Date
-                ending_date = datetime.strptime(opening["Ending_Date"], '%a, %d %b %Y %H:%M:%S %Z')
-                if ending_date > current_date:
-                    if keyword.lower() in opening_role_name.lower() or keyword.lower() in opening_role_info.Role_Desc.lower():
-                        matching_open_positions.append({
-                            "Ending_Date": ending_date.strftime('%Y-%m-%d'),  # Convert back to your desired format
-                            "Position_ID": opening["Position_ID"],
-                            "Role_Name": opening["Role_Name"],
-                            "Starting_Date": opening["Starting_Date"],
-                            "Department": opening_role_info.Department,
-                            "Role_Desc": opening_role_info.Role_Desc
-                        })
+                    ending_date = datetime.strptime(ending_date, '%a, %d %b %Y %H:%M:%S %Z')
+                    if ending_date > current_date:
+                        if keyword.lower() in opening_role_name.lower() or keyword.lower() in opening_role_info.Role_Desc.lower():
+                            matching_open_positions.append({
+                                "Ending_Date": ending_date.strftime('%Y-%m-%d'),  # Convert back to your desired format
+                                "Position_ID": opening["Position_ID"],
+                                "Role_Name": opening["Role_Name"],
+                                "Starting_Date": opening["Starting_Date"],
+                                "Department": opening_role_info.Department,
+                                "Role_Desc": opening_role_info.Role_Desc
+                            })
 
             if matching_open_positions:
                 return jsonify({

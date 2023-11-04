@@ -3,7 +3,7 @@
         <v-container>
             <StaffNavbar v-if="role === 'staff'" />
             <HRNavbar v-if="role === 'hr'" />
-
+            
             <div style="padding-top: 80px; padding-bottom: 80px;">
                 
                 <div class="container ms-auto">
@@ -64,43 +64,37 @@
             
             <div class="container ms-auto">
                 <div class="row">
-                    
-                    <router-link class="router-link-custom" :to="{ name: 'roleListing'}">
-                        <!-- <router-link :to="{ name: 'specificListing', params:{ id: 1 }}"> -->
-                            <a href="./views/specific_listing.vue"></a>
-                            
-                            <div class="row">
-                                <div class="col-lg-4 col-md-6 col-12" v-for="card in filteredCardData" :key="card.id">
-                                    <div class="listing-card">
-                                        <p class="card-heading">{{ card.title }}</p>
-                                        <p class="card-subheading">{{ card.department }}</p>
-                                        <p class="card-deadline">Deadline: {{ card.deadline }}</p>
-                                        <p class="card-description">{{ card.description }}</p>
-                                        <router-link :to="{ name: 'roleListing', query: { id: card.id } }">
-                                            <button class="card-find-btn">Find Out More</button>
-                                        </router-link>
-                                        <router-link :to="{ name: 'roleApplication', params: { id: card.id } }">
-                                            <button class="card-apply-btn">APPLY</button>
-                                        </router-link>
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-12" v-for="card in filteredCardData" :key="card.id">
+                            <div class="listing-card">
+                                <p class="card-heading">{{ card.title }}</p>
+                                <p class="card-subheading">{{ card.department }}</p>
+                                <p class="card-deadline">Deadline: {{ card.deadline }}</p>
+                                <p class="card-description">{{ card.description }}</p>
+                                <router-link :to="{ name: 'roleListing', query: { id: card.id } }">
+                                    <button class="card-find-btn">Find Out More</button>
+                                </router-link>
+                                <router-link :to="{ name: 'roleApplication', params: { id: card.id } }">
+                                    <button class="card-apply-btn">APPLY</button>
+                                </router-link>
                             </div>
-                            
-                        </router-link>
-                        
+                        </div>
                     </div>
+                    
+                    
                 </div>
             </div>
-        </v-container>
-    </v-app>
+        </div>
+    </v-container>
+</v-app>
 </template>
 
 <script>
-    import axios from 'axios';
-    // import { handleDropdown } from "../assets/js/dropdown.js";
-    import VueMultiselect from 'vue-multiselect'
-    import StaffNavbar from '@/components/staff_navbar.vue';
-    import HRNavbar from '@/components/hr_navbar.vue';
+import axios from 'axios';
+// import { handleDropdown } from "../assets/js/dropdown.js";
+import VueMultiselect from 'vue-multiselect'
+import StaffNavbar from '@/components/staff_navbar.vue';
+import HRNavbar from '@/components/hr_navbar.vue';
 
 export default {
     name: 'overallListing',
@@ -235,106 +229,106 @@ export default {
                 })
             }
         })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        },
-        created() {
-            console.log("working")
-        },
-        data() {
-            return {
-                searchInput: "",
-                selectedDepartments: [],
-                filteredData: null,
-                cardData: [
-                {
-                    id: 1,
-                    title: "Account Manager",
-                    department: "Sales",
-                    deadline: "15 October 2023",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-                
-                {
-                    id: 2,
-                    title: "Finance Manager",
-                    department: "Finance",
-                    deadline: "15 October 2023",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-                
-                {
-                    id: 3,
-                    title: "Developer",
-                    department: "IT",
-                    deadline: "15 October 2023",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-                
-                {
-                    id: 1,
-                    title: "Account Manager",
-                    department: "Sales",
-                    deadline: "15 October 2023",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-                
-                {
-                    id: 2,
-                    title: "Account Manager",
-                    department: "Sales",
-                    deadline: "15 October 2023",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-                
-                {
-                    id: 3,
-                    title: "Account Manager",
-                    department: "Sales",
-                    deadline: "15 October 2023",
-                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                },
-                ],
-                
-                departments: [
-                // {name: 'Chairman', code: 'CH'},
-                // {name: 'CEO', code: 'CEO'},
-                // {name: 'Sales', code: 'SA'},
-                // {name: 'Engineering', code: 'EN'},
-                // {name: 'HR', code: 'HR'},
-                // {name: 'Finance', code: 'FIN'},
-                // {name: 'Consultancy', code: 'CO'},
-                // {name: 'Solutioning', code: 'SO'},
-                // {name: 'IT', code: 'IT'}
-                "Chairman",
-                "CEO",
-                "Sales",
-                "Engineering",
-                "HR",
-                "Finance",
-                "Consultancy",
-                "Solutioning",
-                "IT"
-                ],
-            };
-        },
-        computed: {
-            filteredCardData() {
-                if (this.searchInput || this.selectedDepartments.length > 0) {
-                    console.log("returning filteredData");
-                    console.log(this.filteredData);
-                    return this.filteredData;
-                } else {
-                    return this.cardData;
-                }
-            },   
-
-            role() {
-                return this.$route.params.role;
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    },
+    created() {
+        console.log("working")
+    },
+    data() {
+        return {
+            searchInput: "",
+            selectedDepartments: [],
+            filteredData: null,
+            cardData: [
+            {
+                id: 1,
+                title: "Account Manager",
+                department: "Sales",
+                deadline: "15 October 2023",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            
+            {
+                id: 2,
+                title: "Finance Manager",
+                department: "Finance",
+                deadline: "15 October 2023",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            
+            {
+                id: 3,
+                title: "Developer",
+                department: "IT",
+                deadline: "15 October 2023",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            
+            {
+                id: 1,
+                title: "Account Manager",
+                department: "Sales",
+                deadline: "15 October 2023",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            
+            {
+                id: 2,
+                title: "Account Manager",
+                department: "Sales",
+                deadline: "15 October 2023",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            
+            {
+                id: 3,
+                title: "Account Manager",
+                department: "Sales",
+                deadline: "15 October 2023",
+                description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            },
+            ],
+            
+            departments: [
+            // {name: 'Chairman', code: 'CH'},
+            // {name: 'CEO', code: 'CEO'},
+            // {name: 'Sales', code: 'SA'},
+            // {name: 'Engineering', code: 'EN'},
+            // {name: 'HR', code: 'HR'},
+            // {name: 'Finance', code: 'FIN'},
+            // {name: 'Consultancy', code: 'CO'},
+            // {name: 'Solutioning', code: 'SO'},
+            // {name: 'IT', code: 'IT'}
+            "Chairman",
+            "CEO",
+            "Sales",
+            "Engineering",
+            "HR",
+            "Finance",
+            "Consultancy",
+            "Solutioning",
+            "IT"
+            ],
+        };
+    },
+    computed: {
+        filteredCardData() {
+            if (this.searchInput || this.selectedDepartments.length > 0) {
+                console.log("returning filteredData");
+                console.log(this.filteredData);
+                return this.filteredData;
+            } else {
+                return this.cardData;
             }
+        },   
+        
+        role() {
+            return this.$route.params.role;
         }
     }
+}
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

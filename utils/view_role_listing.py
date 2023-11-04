@@ -152,16 +152,17 @@ def get_all_role_listing():
 
             if role:
                 ending_date = role_listing_item.Ending_Date
-                if ending_date > current_date:
-                    data = {
-                        "Ending_Date": role_listing_item.Ending_Date,
-                        "Position_ID": role_listing_item.Position_ID,
-                        "Role_Name": role_listing_item.Role_Name,
-                        "Starting_Date": role_listing_item.Starting_Date,
-                        "Role_Desc": role.Role_Desc,
-                        "Department": role.Department
-                    }
-                    joined_data.append(data)
+                if ending_date:
+                    if ending_date > current_date:
+                        data = {
+                            "Ending_Date": role_listing_item.Ending_Date,
+                            "Position_ID": role_listing_item.Position_ID,
+                            "Role_Name": role_listing_item.Role_Name,
+                            "Starting_Date": role_listing_item.Starting_Date,
+                            "Role_Desc": role.Role_Desc,
+                            "Department": role.Department
+                        }
+                        joined_data.append(data)
 
         if joined_data:
             return jsonify({
