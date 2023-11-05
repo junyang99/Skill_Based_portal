@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
                     <div class="container ms-auto">
                         <p class="header-btn">APPLY</p>
@@ -109,6 +112,8 @@
 
 <script>
 import axios from 'axios';
+import StaffNavbar from '@/components/staff_navbar.vue';
+import HRNavbar from '@/components/hr_navbar.vue';
 export default {
     name: 'roleApplication',
     methods: {
@@ -178,6 +183,17 @@ export default {
                 },
         };
     },
+
+    components: {
+        StaffNavbar,
+        HRNavbar
+    },
+
+    computed: {
+        role() {
+            return this.$route.params.role;
+        }
+    }
 
 }
 </script>
