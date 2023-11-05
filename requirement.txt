@@ -10,4 +10,5 @@ Flask-Testing==0.8.1
 Babel
 json5==0.9.5
 jsonschema
+mysql-connector-python==8.0.32
 
