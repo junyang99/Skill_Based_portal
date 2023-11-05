@@ -2,7 +2,6 @@
     <v-app>
         <v-container>
             <div style="padding-top: 80px; padding-bottom: 80px;">
-
                 <div class="container ms-auto">
                     <div class="row">
                     <div class="col">
@@ -65,10 +64,41 @@
 </template>
 
 <script>
+import axios from 'axios';
+
     export default {
         name: 'specificListing',
         mounted() {
             document.title = "All in One";
+            axios.get('http://localhost:5013/Role_Listing', {
+                params: {
+                    position_id: this.$route.query.id,
+                    staff_id: 140001
+                }
+            })
+            .then(response => {
+                console.log(response.data.data);
+                var data = response.data.data;
+                this.roleData[0].id = this.$route.query.id;
+                // console.log(data.Role_Name);
+                this.roleData[0].title = data.Role_Name;
+                this.roleData[0].department = data.Department;
+                this.roleData[0].deadline = data.Ending_Date;
+                this.roleData[0].description = data.Role_Desc;
+                this.roleData[0].match = data['Role-Skill Match'].data.percentage_match;
+                this.roleData[0].match = Math.round(this.roleData[0].match);
+
+                // var role_skill = data['Required Skills for Role'];
+                var role_skills = data['Required Skills for Role'].map(skill => skill.Skill_Name);
+                var staff_skills = data['Staff Skills']['data']['Staff-Skill'].map(skill => skill.Skill_Name);
+
+
+                this.roleData[0].skillMatch = role_skills.filter(skill => staff_skills.includes(skill));
+                this.roleData[0].skillMiss = role_skills.filter(skill => !staff_skills.includes(skill));
+
+                
+
+            })
         },
         created() {
             console.log("working")
@@ -85,7 +115,7 @@
                 description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis faucibus est. Proin tristique dolor et tortor venenatis, auctor vestibulum risus consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                 match: 75,
                 skillMatch: ['Audit Frameworks', 'Budgeting', 'Business Acumen'],
-                skillMiss: ['Audit Compliance']
+                skillMiss: ['Audit Compliance'],
                 }
             ],
             };

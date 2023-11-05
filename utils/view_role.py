@@ -47,6 +47,22 @@ def get_all():
         'message': 'There are no available roles'
     }
 
+@app.route('/Role/<string:Role_Name>')
+def find_by_Role_Name(Role_Name):
+    RoleList = Role.query.filter_by(Role_Name=Role_Name).all()
+    if RoleList:
+        return jsonify({
+            'code': 200,
+            'data': {
+                'Role': [Role.json() for Role in RoleList]
+            }
+        }
+        )
+    return jsonify({
+        'code': 404,
+        'message': 'Role not found.'
+    }), 404
+
 
 
 if __name__ == '__main__':

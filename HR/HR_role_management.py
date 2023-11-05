@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import and_
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root@localhost:3306/hr portal"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:root@localhost:3306/HR Portal"
 db = SQLAlchemy(app)
 
 #data json:

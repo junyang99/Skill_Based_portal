@@ -73,23 +73,19 @@ class Role_Skill(db.Model):
 
     def json(self):
         return {
-            'Skill_Name': self.Role_Name,
-            'Skill_Desc': self.Skill_Name
+            'Role_Name': self.Role_Name,
+            'Skill_Name': self.Skill_Name
         }
     
 # specific role listings
 @app.route('/Role_Listing', methods=['GET'])
 def get_role_listing():
-    # position_id = request.get_json()['position_id'] # input format -- {"position_id": position_id, "staff_id": staff_id}
-    # staff_id = request.get_json()['staff_id']
-
     position_id = request.args.get('position_id')
     staff_id = request.args.get('staff_id')
 
     if position_id and staff_id:
-        # get row from Open_Position table
-        # can get Role_Name (1) from here
-        selected_role_listing = Open_Position.query.filter_by(Position_ID = position_id).first()
+        # Get row from Open_Position table
+        selected_role_listing = Open_Position.query.filter_by(Position_ID=position_id).first()
 
         today = datetime.now().date()
 
@@ -99,23 +95,22 @@ def get_role_listing():
                 'message': 'Ending date has passed.'
             }), 400
 
-        # use Role_Name from Open_Position table to match with Role_Name in Role table
-        # Role table -> Role_Desc (2), Department (3)
-        selected_role_info = Role.query.filter_by(Role_Name = selected_role_listing.Role_Name).first()
+        # Use Role_Name from Open_Position table to match with Role_Name in Role table
+        selected_role_info = Role.query.filter_by(Role_Name=selected_role_listing.Role_Name).first()
 
-        # use Role Name from Open_Position table to match with Role_Name in Role_Skill table
-        # get required skills (4) for the selected role listing
-        selected_skill_info = Role_Skill.query.filter_by(Role_Name = selected_role_listing.Role_Name).all()
+        # Use Role Name from Open_Position table to match with Role_Name in Role_Skill table
+        selected_skill_info = Role_Skill.query.filter_by(Role_Name=selected_role_listing.Role_Name).all()
 
-        # get Staff's current skills (5) from Staff_Skill table 
+        # Retrieve Ending_Date from Open_Position table
+        ending_date = selected_role_listing.Ending_Date
+
         staffURL = viewStaffSkillURL + "/" + str(staff_id)
-        staff_skill = invoke_http(staffURL, method='GET') # this function is using get_staff_skills to return skills of a specific staff
+        staff_skill = invoke_http(staffURL, method='GET')
 
-        # return Role-Skill Match (6) from role_skill_percentage.py
         role_skill_params = {'staff_id': staff_id, 'role_name': selected_role_listing.Role_Name}
         role_skill_match = requests.get(roleSkillPercentURL, params=role_skill_params).json()
 
-        if selected_role_info and selected_skill_info and staff_skill["code"]==200 and role_skill_match["code"]==200:
+        if selected_role_info and selected_skill_info and staff_skill["code"] == 200 and role_skill_match["code"] == 200:
             return jsonify({
                 'code': 200,
                 'data':
@@ -125,10 +120,11 @@ def get_role_listing():
                         'Department': selected_role_info.Department,
                         'Required Skills for Role': [roleSkill.json() for roleSkill in selected_skill_info],
                         'Staff Skills': staff_skill,
-                        'Role-Skill Match': role_skill_match
+                        'Role-Skill Match': role_skill_match,
+                        'Ending_Date': ending_date
                     }
             })
-        
+
         return jsonify({
             'code': 400,
             'message': 'Missing information for selected role listing.'
@@ -138,6 +134,44 @@ def get_role_listing():
         'code': 400,
         'message': 'No role listing selected or no staff ID found.'
     }), 400
+
+
+@app.route('/All_Role_Listing', methods=['GET'])
+def get_all_role_listing():
+    role_listing = Open_Position.query.all()
+
+    if role_listing:
+        # Create a list to store the joined data
+        joined_data = []
+
+        for role_listing_item in role_listing:
+            # Find the corresponding Role object by Role_Name
+            role = Role.query.filter_by(Role_Name=role_listing_item.Role_Name).first()
+
+            if role:
+                data = {
+                    "Ending_Date": role_listing_item.Ending_Date,
+                    "Position_ID": role_listing_item.Position_ID,
+                    "Role_Name": role_listing_item.Role_Name,
+                    "Starting_Date": role_listing_item.Starting_Date,
+                    "Role_Desc": role.Role_Desc,  
+                    "Department": role.Department  
+                }
+                joined_data.append(data)
+
+        return jsonify({
+            'code': 200,
+            'data': {
+                'Role_Listing': joined_data
+            }
+        }), 200
+
+    return jsonify({
+        'code': 404,
+        'message': 'There are no available role listings.'
+    }), 404
+
+
 
 if __name__ == '__main__':
     app.run(port=5013, debug=True)
