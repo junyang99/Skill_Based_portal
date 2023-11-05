@@ -1,6 +1,9 @@
 <template>
     <v-app>
         <v-container>
+            <StaffNavbar v-if="role === 'staff'" />
+            <HRNavbar v-if="role === 'hr'" />
+
             <div style="padding-top: 80px; padding-bottom: 80px;">
                 <div class="container ms-auto">
                     <div class="page-head">
@@ -27,9 +30,9 @@
                     <tbody>
                         <tr v-for="(application, index) in applications" :key="index">
                         <td>{{ index + 1 }}</td>
-                        <td>{{ application.roleApplied }}</td>
-                        <td>{{ application.department }}</td>
-                        <td>{{ application.dateSubmitted }}</td>
+                        <td>{{ application.role_name }}</td>
+                        <td>{{ application.dept }}</td>
+                        <td>{{ application.application_date }}</td>
                         <td>
                             <span class="table-status" :style="{ backgroundColor: getStatusColor(application.status) }">
                                 {{ application.status }}
@@ -52,12 +55,39 @@
     </v-app>
 </template>
 <script>
+import axios from 'axios';
+import StaffNavbar from '@/components/staff_navbar.vue';
+import HRNavbar from '@/components/hr_navbar.vue';
+
     export default {
         name: 'myApplications',
         mounted() {
             document.title = "All in One";
         },
         created() {
+            axios.get('http://127.0.0.1:5016/Staff/applications/160065') 
+            .then(response => {
+                response = response.data.data;
+                for (let i = 0; i < response.length; i++) {
+                    console.log(response[i]);
+                    this.applications[i].id = response[i].id;
+                    this.applications[i].role_name = response[i].role_name;
+                    this.applications[i].dept = response[i].dept;
+                    this.applications[i].application_date = response[i].application_date;
+                    if (response[i].application_status == 0) {
+                        this.applications[i].status = 'Pending';
+                    } else if (response[i].application_status == 1) {
+                        this.applications[i].status = 'Accepted';
+                    } else {
+                        this.applications[i].status = 'Rejected';
+                    }
+
+                }
+            
+            })
+            .catch(error => {
+                console.error('Error fetching staff applications:', error);
+            });
             console.log("working")
         },
 
@@ -98,6 +128,17 @@
                 return 'var(--status-rejected)';
             }
             },
+        },
+
+        components: {
+            StaffNavbar,
+            HRNavbar
+        },
+
+        computed: {
+            role() {
+                return this.$route.params.role;
+            }
         }
     }
 </script>

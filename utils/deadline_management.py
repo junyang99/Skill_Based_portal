@@ -4,11 +4,12 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from sqlalchemy import and_, or_, desc
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://root:root@localhost:3306/hr portal"
 db = SQLAlchemy(app)
-
+CORS(app)
 
 class Role(db.Model):
     role_name = db.Column(db.String(20), primary_key=True)
@@ -139,135 +140,59 @@ def generate_position_id():
 def role_exists(role_name):
     return Role.query.filter_by(role_name=role_name).first() is not None
 
-#OLD
-# @app.route('/HR/add_open_position', methods=['POST'])
-# def add_open_position():
-#     if request.is_json:
-#         try:
-#             data = request.get_json()
-#             role_name = data.get('role_name')
-#             department = data.get('department')  # This is not used in Open_position
-#             skills = data.get('skills')          # This is not used in Open_position
-#             role_desc = data.get('role_desc')    # This is not used in Open_position
-
-#             # Validate role_name exists
-#             if not role_exists(role_name):
-#                 return jsonify({
-#                     'message': 'Role name does not exist',
-#                     'data': {"role_name": role_name}
-#                 }), 400
-
-#             # Generate a new position ID
-#             position_id = generate_position_id()
-
-#             # Create and add the new open position without starting and ending dates
-#             new_open_position = Open_position(
-#                 Position_ID=position_id,
-#                 Role_Name=role_name,
-#                 Starting_Date = None,
-#                 Ending_Date = None,
-                
-#             )
-#             db.session.add(new_open_position)
-#             db.session.commit()
-
-#             return jsonify({
-#                 'message': 'Open position added successfully',
-#                 'data': {
-#                     'Position_ID': position_id,
-#                     'Role_Name': role_name,
-#                     "Starting_Date": "None",
-#                     "Ending_Date": "None"
-#                 }
-#             }), 201
-
-#         except Exception as e:
-#             db.session.rollback()
-#             return jsonify({
-#                 "code": 500,
-#                 "message": "Internal error: " + str(e)
-#             }), 500
-
-#     else:
-#         return jsonify({
-#             "code": 400,
-#             "message": "Please use a valid JSON request"
-#         }), 400
-
-
-# Works Starts
-@app.route('/HR/open_position', methods=['POST'])
-def create_position():
+@app.route('/HR/add_open_position', methods=['POST'])
+def add_open_position():
     if request.is_json:
-        # send data to relevant columnn
         try:
             data = request.get_json()
-            Position_ID = data.get('Position_ID')
-            Role_Name = data.get('Role_Name')
-            Starting_Date = data.get('Starting_Date')
-            Ending_Date = data.get('Ending_Date')
+            role_name = data.get('role_name')
+            department = data.get('department')  # This is not used in Open_position
+            skills = data.get('skills')          # This is not used in Open_position
+            role_desc = data.get('role_desc')    # This is not used in Open_position
 
-            # Check if position id is unique
-            if Open_position.query.filter_by(Position_ID=Position_ID).first():
+            # Validate role_name exists
+            if not role_exists(role_name):
                 return jsonify({
-                    'message': 'Position ID already exists',
-                    'data': {"role_name": Position_ID}
+                    'message': 'Role name does not exist',
+                    'data': {"role_name": role_name}
                 }), 400
 
-            # Check if role name is unique
-            if not (Role.query.filter_by(role_name=Role_Name).first()):
-                return jsonify({
-                    'message': 'Role Name does not exist',
-                    'data': {"role_name": Role_Name}
-                }), 400
+            # Generate a new position ID
+            position_id = generate_position_id()
 
-            fields_error = {}
-
-            # position_id_error = field_check(Position_ID)
-            # if position_id_error:
-            #     fields_error['position_id'] = position_id_error
-
-            # role_error = field_check(Role_Name)
-            # if role_error:
-            #     fields_error['role_name'] = role_error
-
-            date_error = date_check(Starting_Date, Ending_Date, Role_Name)
-            if date_error:
-                fields_error['date_error'] = date_error
-
-            # Check if any field is missing
-            if fields_error:
-                return jsonify({
-                    'message': 'Required fields are missing or invalid',
-                    'data': fields_error
-                }), 400
-
-            # Create the position listing
-            position = Open_position(Position_ID=Position_ID, Role_Name=Role_Name,
-                                     Starting_Date=Starting_Date, Ending_Date=Ending_Date)
-            db.session.add(position)
-
+            # Create and add the new open position without starting and ending dates
+            new_open_position = Open_position(
+                Position_ID=position_id,
+                Role_Name=role_name,
+                Starting_Date = None,
+                Ending_Date = None,
+                
+            )
+            db.session.add(new_open_position)
             db.session.commit()
 
             return jsonify({
-                'message': 'New Position created successfully'
+                'message': 'Open position added successfully',
+                'data': {
+                    'Position_ID': position_id,
+                    'Role_Name': role_name,
+                    "Starting_Date": "None",
+                    "Ending_Date": "None"
+                }
             }), 201
 
         except Exception as e:
-            print(str(e))
-
+            db.session.rollback()
             return jsonify({
                 "code": 500,
-                "message": "internal error: " + str(e)
+                "message": "Internal error: " + str(e)
             }), 500
 
-    # if reached here, not a JSON request.
-    return jsonify({
-        "code": 400,
-        "message": "Please use a valid json request"
-    }), 400
-
-#End
+    else:
+        return jsonify({
+            "code": 400,
+            "message": "Please use a valid JSON request"
+        }), 400
 
 @app.route('/HR/update_open_position', methods=['PUT'])
 def update_open_position():
@@ -335,9 +260,6 @@ def update_open_position():
             "code": 400,
             "message": "Please use a valid JSON request"
         }), 400
-
-
-
 
 if __name__ == '__main__':
     app.run(port=5015, debug=True)
