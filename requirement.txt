@@ -289,7 +289,6 @@ tensorflow-estimator==2.13.0
 tensorflow-io-gcs-filesystem==0.34.0
 termcolor==2.3.0
 terminado==0.9.4
-testpath @ file:///home/ktietz/src/ci/testpath_1611930608132/work
 textdistance @ file:///tmp/build/80754af9/textdistance_1612461398012/work
 threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
 three-merge @ file:///tmp/build/80754af9/three-merge_1607553261110/work
