@@ -120,7 +120,7 @@ export default {
                 "Staff_ID": this.applicationData.staffID,
                 "Application_Date": "2023-11-04",
                 "Cover_Letter": this.coverLetter,
-                "Application_Status": 1
+                "Application_Status": 0
             }
 
             // Send a POST request to the Flask API to submit the application

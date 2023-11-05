@@ -61,9 +61,23 @@ import axios from 'axios';
         created() {
             axios.get('http://127.0.0.1:5016/Staff/applications/160065') 
             .then(response => {
-                this.applications = response.data.data;
-                console.log('LOGGING')
-                console.log(response.data.data) // Update the applications data with the fetched data
+                response = response.data.data;
+                for (let i = 0; i < response.length; i++) {
+                    console.log(response[i]);
+                    this.applications[i].id = response[i].id;
+                    this.applications[i].role_name = response[i].role_name;
+                    this.applications[i].dept = response[i].dept;
+                    this.applications[i].application_date = response[i].application_date;
+                    if (response[i].application_status == 0) {
+                        this.applications[i].status = 'Pending';
+                    } else if (response[i].application_status == 1) {
+                        this.applications[i].status = 'Accepted';
+                    } else {
+                        this.applications[i].status = 'Rejected';
+                    }
+
+                }
+            
             })
             .catch(error => {
                 console.error('Error fetching staff applications:', error);

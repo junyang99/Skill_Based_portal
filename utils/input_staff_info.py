@@ -12,7 +12,7 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:8081"}})
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/HR Portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/HR Portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
