@@ -111,7 +111,7 @@
         name: 'myProfile',
         mounted() {
             document.title = "All in One";
-            axios.get('http://127.0.0.1:5008/Staff/160065')
+            axios.get('http://127.0.0.1:5008/Staff/140001')
                 .then(response => {
                     var data = response.data.data
 
@@ -124,7 +124,7 @@
                 .catch(error => {
                     console.log(error)
                 })
-                axios.get('http://127.0.0.1:5012/Staff_Skill/160065')
+                axios.get('http://127.0.0.1:5012/Staff_Skill/140001')
                 .then(response => {
                     console.log(response.data.data)
                     var data = response.data.data

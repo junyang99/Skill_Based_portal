@@ -145,13 +145,13 @@ export default {
     mounted() {
         console.log("mounted")
         console.log(this.$route.query.id)
-        axios.get('http://127.0.0.1:5008/Staff/160065')
+        axios.get('http://127.0.0.1:5008/Staff/140001')
                 .then(response => {
                     var data = response.data.data
                     // console.log(this.$route.query.id)
                     const position_id = this.$route.query.id
                     this.cardid = position_id
-                    this.applicationData.staffID = 160065
+                    this.applicationData.staffID = 140001
                     this.applicationData.staffName = data.Staff_FName + " " + data.Staff_LName
                     this.applicationData.staffEmail = data.Email
                     this.applicationData.staffCountry = data.Country
