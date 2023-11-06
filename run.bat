@@ -3,14 +3,14 @@
 REM Set the root directory of your Git repository
 set ROOT_DIR=%CD%
 
-REM Run HR Flask apps
-for %%i in ("%ROOT_DIR%\HR\*.py") do (
-  start cmd /k "python %%i"
-)
-
-REM Run utils Flask apps
-for %%i in ("%ROOT_DIR%\utils\*.py") do (
-  start cmd /k "python %%i"
+REM Loop through files in the specified folder
+for %%f in ("%ROOT_DIR%\utils\*.py") do (
+    REM Check if the file name does not end with "_test.py"
+    echo %%~nf | find /i "_test" > nul
+    if errorlevel 1 (
+        REM Execute the Python file
+        start cmd /k "python %%f"
+    )
 )
 
 REM Install dependencies and run the UI
