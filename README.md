@@ -15,7 +15,7 @@
 
 # Running the Application on Mac/Linux
 1. Open your preferred terminal.
-2. Navigate to the `Skill_based_portal/utils` directory:
-    - cd path/to/Skill_based_portal/utils
+2. Navigate to the `Skill_based_portal` directory:
+    - cd path/to/Skill_based_portal/
 3. Execute the provided `run_utils.sh` script:
     - ./run_utils.sh
