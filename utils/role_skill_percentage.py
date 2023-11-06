@@ -15,6 +15,8 @@ CORS(app)
 
 staff_skill_url = "http://localhost:5012/Staff_Skill"
 role_skill_url = "http://localhost:5011/Role_Skill"
+
+
 def normalize_skill_name(skill_name):
     return skill_name.lower().replace(" ", "")
 @app.route('/compare_skills', methods=['GET'])
