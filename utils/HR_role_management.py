@@ -29,8 +29,8 @@ class RoleSkill(db.Model):
 
 class Open_position(db.Model):
     Role_Name = db.Column(db.String(20), db.ForeignKey('role.role_name'), primary_key=True)
-    Starting_Date = db.Column(db.Date)
-    Ending_Date = db.Column(db.Date)
+    Starting_Date = db.Column(db.Date, nullable=True)
+    Ending_Date = db.Column(db.Date, nullable=True)
 
 def field_check(field):
     min_length = 2
