@@ -20,14 +20,14 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="role_name">Role Name:</label>
-                                    <input v-model="title" type="text" name="role_name" id="role_name" placeholder="Role Name" />
+                                    <input v-model="title" type="text" name="role_name" id="role_name" placeholder="Role Name" required/>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="new_department">Department:</label>
-                                    <input v-model="department_name" type="text" name="new_department" id="new_department" placeholder="Department" />
+                                    <input v-model="department_name" type="text" name="new_department" id="new_department" placeholder="Department" required/>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="role_description">Role Description:</label>
-                                    <textarea v-model="description" name="role_description" id="role_description" cols="30" rows="8"></textarea>
+                                    <textarea v-model="description" name="role_description" id="role_description" cols="30" rows="8" required></textarea>
                                 </div>
                             </div>
 
