@@ -39,7 +39,7 @@
                             </span>
                         </td>
                         <td>
-                            <router-link :to="{ name: 'viewApplication'}">
+                            <router-link :to="{ name: 'viewApplication' ,query: { id: application.id } }" >
                                 <img class="table-actions" src="../assets/icons/view.png" />
                                 <!-- <img class="table-actions" src="../assets/icons/view.png" @click="viewApplication(index)" /> -->
                             </router-link>
@@ -68,23 +68,8 @@ import HRNavbar from '@/components/hr_navbar.vue';
             axios.get('http://127.0.0.1:5016/Staff/applications/140001') 
             .then(response => {
                 response = response.data.data;
+                console.log(response);
                 this.applications = response;
-                // for (let i = 0; i < response.length; i++) {
-                //     console.log(response[i]);
-                //     this.applications[i].id = response[i].id;
-                //     this.applications[i].role_name = response[i].role_name;
-                //     this.applications[i].dept = response[i].dept;
-                //     this.applications[i].application_date = response[i].application_date;
-                //     if (response[i].application_status == 0) {
-                //         this.applications[i].status = 'Pending';
-                //     } else if (response[i].application_status == 1) {
-                //         this.applications[i].status = 'Accepted';
-                //     } else {
-                //         this.applications[i].status = 'Rejected';
-                //     }
-                // }
-
-                // for each application, edit status to be Pending, Accepted, or Rejected for 0 , 1 and 2
                 for (let i = 0; i < response.length; i++) {
                     if (response[i].application_status == 0) {
                         this.applications[i].status = 'Pending';

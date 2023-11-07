@@ -223,6 +223,41 @@ def get_application(Role_Name):
         'message': 'No applications found for the specified Position_ID'
     }), 404
 
+# view applications by application id
+@app.route('/Application/<int:Application_ID>')
+def get_application_by_id(Application_ID):
+    application = Application.query.filter_by(Application_ID=Application_ID).first()
+    if application:
+        staff_skills = Staff_Skill.query.filter_by(
+            Staff_ID=application.Staff_ID).all()
+        staff_skill_data = [skill.Skill_Name for skill in staff_skills]
+
+        staff_data = Staff.query.filter_by(Staff_ID=application.Staff_ID).first()
+        staff_name = staff_data.Staff_FName + ' ' + staff_data.Staff_LName
+
+        open_position_data = Open_Position.query.filter_by(Position_ID=application.Position_ID).first()
+        role_name = open_position_data.Role_Name
+
+        return jsonify({
+            'code': 200,
+            'application': {
+                'Application_ID': application.Application_ID,
+                'Position_ID': application.Position_ID,
+                'Staff_ID': application.Staff_ID,
+                'Application_Date': application.Application_Date,
+                'Cover_Letter': application.Cover_Letter,
+                'Application_Status': application.Application_Status,
+                'Staff_Skill': staff_skill_data,
+                'Staff_Name': staff_name,
+                'Role_Name': role_name
+            }
+        })
+
+    return jsonify({
+        'code': 404,
+        'message': 'No applications found for the specified Application_ID'
+    }), 404
+
 
 if __name__ == '__main__':
     app.run(port=5004, debug=True)
