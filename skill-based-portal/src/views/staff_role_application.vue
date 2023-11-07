@@ -131,10 +131,11 @@ export default {
             // Send a POST request to the Flask API to submit the application
             console.log("sending")
             axios.post('http://127.0.0.1:5016/create_application', applicationData)
+
             .then(() => {
-            // Handle the successful submission, e.g., show a success message
-            console.log('Application submitted successfully');
-        })
+                // Handle the successful submission, e.g., show a success message
+                console.log('Application submitted successfully');
+            })
             .catch(error => {
                 // Handle errors, e.g., display an error message
                 console.error('Error submitting application:', error);
@@ -145,17 +146,23 @@ export default {
     mounted() {
         console.log("mounted")
         console.log(this.$route.query.id)
-        axios.get('http://127.0.0.1:5008/Staff/140001')
+
+        const idToFetch = this.role === 'staff' ? this.staffID : this.hrID;
+        const url = `http://127.0.0.1:5008/Staff/${idToFetch}`;
+
+        axios.get(url)
                 .then(response => {
                     var data = response.data.data
                     // console.log(this.$route.query.id)
                     const position_id = this.$route.query.id
                     this.cardid = position_id
-                    this.applicationData.staffID = 140001
+                    this.applicationData.staffID = idToFetch
                     this.applicationData.staffName = data.Staff_FName + " " + data.Staff_LName
                     this.applicationData.staffEmail = data.Email
                     this.applicationData.staffCountry = data.Country
                     this.applicationData.staffDepartment = data.Dept
+
+                    console.log(data)
                 })
                 .catch(error => {
                     console.log(error)
@@ -169,18 +176,21 @@ export default {
 
     data() {
         return {
-        applicationData: {
-                id: '1',
-                title: 'Account Manager',
-                department: 'Sales',
-                staffID: '000123',
-                staffName: 'Alice Tan',
-                staffEmail: 'alice@gmail.com',
-                staffCountry: 'Singapore',
-                staffDepartment: 'Marketing',
-                staffRole: 'Content Strategist',
-                staffSkills: ['Audit Frameworks', 'Budgeting', 'Business Acumen'],
-                },
+            applicationData: {
+                id: '',
+                title: '',
+                department: '',
+                staffID: '',
+                staffName: '',
+                staffEmail: '',
+                staffCountry: '',
+                staffDepartment: '',
+                staffRole: '',
+                staffSkills: [],
+            },
+
+            staffID: '140001',
+            hrID: '160065'
         };
     },
 

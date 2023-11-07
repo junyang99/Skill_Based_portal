@@ -61,11 +61,16 @@ import HRNavbar from '@/components/hr_navbar.vue';
 
     export default {
         name: 'myApplications',
+
         mounted() {
             document.title = "All in One";
         },
+
         created() {
-            axios.get('http://127.0.0.1:5016/Staff/applications/140001') 
+            const idToFetch = this.role === 'staff' ? this.staffID : this.hrID;
+            const url = `http://127.0.0.1:5016/Staff/applications/${idToFetch}`;
+
+            axios.get(url) 
             .then(response => {
                 response = response.data.data;
                 console.log(response);
@@ -103,14 +108,18 @@ import HRNavbar from '@/components/hr_navbar.vue';
                     department: "Sales",
                     dateSubmitted: "15 October 2023",
                     status: 'Rejected'
-                },{
-                id: 1,
-                roleApplied: "Account Manager",
-                department: "Sales",
-                dateSubmitted: "15 October 2023",
-                status: 'Accepted'
+                },
+                {
+                    id: 1,
+                    roleApplied: "Account Manager",
+                    department: "Sales",
+                    dateSubmitted: "15 October 2023",
+                    status: 'Accepted'
                 }
             ],
+
+            staffID: '140001',
+            hrID: '160065'
             };
         },
 

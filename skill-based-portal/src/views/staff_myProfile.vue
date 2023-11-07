@@ -111,7 +111,11 @@
         name: 'myProfile',
         mounted() {
             document.title = "All in One";
-            axios.get('http://127.0.0.1:5008/Staff/140001')
+
+            const idToFetch = this.role === 'staff' ? this.staffID : this.hrID;
+            const url = `http://127.0.0.1:5008/Staff/${idToFetch}`;
+
+            axios.get(url)
                 .then(response => {
                     var data = response.data.data
 
@@ -124,7 +128,10 @@
                 .catch(error => {
                     console.log(error)
                 })
-                axios.get('http://127.0.0.1:5012/Staff_Skill/140001')
+
+                const skillsUrl = `http://127.0.0.1:5012/Staff_Skill/${idToFetch}`;
+
+                axios.get(skillsUrl)
                 .then(response => {
                     console.log(response.data.data)
                     var data = response.data.data
@@ -150,6 +157,9 @@
                     staffRole: "Content Strategist",
                     staffSkills: ['Audit Frameworks', 'Budgeting', 'Business Acumen']
                 },
+
+                staffID: '140001',
+                hrID: '160065'
             }
         },
 
