@@ -34,6 +34,13 @@ To install and run the app, run the following command after you have downloaded 
 
 ## Step 1 - Run Mamp/Wamp
 ## Step 2 -  Global search and replace database uri as required
+### 1. **Changing the variables:**
+
+   To change the username to `newuser`, password to `newpassword` and port to `8889` modify the URI like this:
+
+   ```python
+   app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://newuser:newpassword@localhost:8889/hr_portal" 
+   ```
 ## Step 3 - Import.sql to local sql server and import sql file in the following sequence
 1. access_control 
 2. role
