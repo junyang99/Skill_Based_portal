@@ -32,7 +32,7 @@
                         <td>{{ index + 1 }}</td>
                         <td>{{ application.role_name }}</td>
                         <td>{{ application.dept }}</td>
-                        <td>{{ application.application_date }}</td>
+                        <td>{{ formatDate(application.application_date) }}</td>
                         <td>
                             <span class="table-status" :style="{ backgroundColor: getStatusColor(application.status) }">
                                 {{ application.status }}
@@ -138,6 +138,14 @@ import HRNavbar from '@/components/hr_navbar.vue';
             } else {
                 return 'var(--status-rejected)';
             }
+            },
+
+            formatDate(dateString) {
+                if (!dateString || dateString === 'null') {
+                    return 'N/A'; // Handle cases where the date is null or empty
+                }
+                const date = new Date(dateString);
+                return date.toLocaleDateString(); // Convert the date to a locale string
             },
         },
 

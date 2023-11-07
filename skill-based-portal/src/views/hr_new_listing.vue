@@ -51,7 +51,7 @@
                                         :multiple="true"
                                         :taggable="true"
                                         placeholder="Search for a skill"
-                    
+                                        required
                                     ></VueMultiselect>
                                 </div>
                             </div>
