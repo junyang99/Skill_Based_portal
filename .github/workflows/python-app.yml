@@ -44,6 +44,8 @@ jobs:
     - name: Verify if tables were created
       env:
         MYSQL_PWD: ${{ secrets.DB_PASSWORD }}
+      run: |
+        mysql -uroot -h127.0.0.1 --execute="SHOW TABLES IN \`HR Portal\`;" --verbose
         
     - name: Unit Test
       run: |
