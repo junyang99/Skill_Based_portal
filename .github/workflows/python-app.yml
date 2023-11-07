@@ -30,12 +30,12 @@ jobs:
         pip install flake8 pytest
         if [ -f requirement.txt ]; then pip install -r requirement.txt; fi
 
-    - name: Wait for MySQL
-      run: |
-        until mysqladmin ping -h 127.0.0.1 -P 3306 --silent; do
-          echo 'waiting for mysqld to be connectable...'
-          sleep 2
-        done
+    # - name: Wait for MySQL
+    #   run: |
+    #     until mysqladmin ping -h 127.0.0.1 -P 3306 --silent; do
+    #       echo 'waiting for mysqld to be connectable...'
+    #       sleep 2
+    #     done
         
     - name: Create actual database and tables from SQL file
       run: |
