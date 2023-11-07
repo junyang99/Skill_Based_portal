@@ -73,12 +73,12 @@
                             </div>
                         </div>
                         
-                        <div class="col-lg-6">
+                        <!-- <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="current_role">Current Job Role:</label>
                                 <input type="text" name="current_role" id="current_role" disabled :placeholder="applicationData.staffRole">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <br>

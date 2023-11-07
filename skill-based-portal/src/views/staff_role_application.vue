@@ -59,12 +59,12 @@
                             </div>
                             </div>
 
-                            <div class="col-lg-6">
+                            <!-- <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="current_role">Current Job Role:</label>
                                 <input type="text" name="current_role" id="current_role" disabled :placeholder="applicationData.staffRole" />
                             </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <br />
@@ -153,7 +153,6 @@ export default {
         axios.get(url)
                 .then(response => {
                     var data = response.data.data
-                    // console.log(this.$route.query.id)
                     const position_id = this.$route.query.id
                     this.cardid = position_id
                     this.applicationData.staffID = idToFetch
@@ -168,6 +167,23 @@ export default {
                     console.log(error)
                 })
         document.title = "All in One";
+        axios.get('http://127.0.0.1:5003/Role/' +this.$route.query.roleName)
+        .then(response => {
+            console.log(response.data.data['Role'][0]['Department']);
+            this.applicationData.department = response.data.data['Role'][0]['Department'];
+            this.applicationData.title = response.data.data['Role'][0]['Role_Name'];
+        })
+        .catch(error => {
+            console.log(error);
+        });
+        axios.get(`http://127.0.0.1:5012/Staff_Skill/${idToFetch}`)
+        .then(response => {
+            console.log(response.data.data);
+            response = response.data.data['Staff-Skill']
+            for (let i = 0; i < response.length; i++) {
+                this.applicationData.staffSkills.push(response[i].Skill_Name)
+            }
+        })
     },
     created() {
         console.log("created")

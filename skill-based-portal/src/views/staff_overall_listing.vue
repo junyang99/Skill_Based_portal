@@ -74,7 +74,7 @@
                                 <router-link :to="{ name: 'roleListing', query: { id: card.id } }">
                                     <button class="card-find-btn">Find Out More</button>
                                 </router-link>
-                                <router-link :to="{ name: 'roleApplication', params: { id: card.id } , query: {id: card.id}}">
+                                <router-link :to="{ name: 'roleApplication', params: { id: card.id } , query: {id: card.id, roleName: card.title}}">
                                     <button class="card-apply-btn">APPLY</button>
                                 </router-link>
                             </div>
