@@ -38,7 +38,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         pip install flask_testing mysql-connector-python
-        if [ -f requirement.txt ]; then pip install -r requirement.txt; fi
+        pip install -r requirement.txt
     - name: Wait for MySQL
       run: |
         until mysqladmin ping -h 127.0.0.1 -P 3306 --silent; do
