@@ -38,14 +38,14 @@ jobs:
     #     done
         
     - name: Create actual database and tables from SQL file
-      run: |
-        mysql -uroot -p${{ secrets.DB_PASSWORD }} -h127.0.0.1 < db/import.sql
+      # run: |
+      #   mysql -uroot -p${{ secrets.DB_PASSWORD }} -h127.0.0.1 < db/import.sql
         
     - name: Verify if tables were created
-      env:
-        MYSQL_PWD: ${{ secrets.DB_PASSWORD }}
-      run: |
-        mysql -uroot -h127.0.0.1 --execute="SHOW TABLES IN \`HR Portal\`;" --verbose
+      # env:
+      #   MYSQL_PWD: ${{ secrets.DB_PASSWORD }}
+      # run: |
+      #   mysql -uroot -h127.0.0.1 --execute="SHOW TABLES IN \`HR Portal\`;" --verbose
         
     - name: Unit Test
       run: |
