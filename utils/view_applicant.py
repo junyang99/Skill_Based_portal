@@ -183,7 +183,15 @@ def get_all():
 
 @app.route('/Application/<string:Role_Name>')
 def get_application(Role_Name):
+    # Check if the Role_Name exists in the Open_Position table
     open_position_data = Open_Position.query.filter_by(Role_Name=Role_Name).first()
+    if not open_position_data:
+        return jsonify({
+            'code': 404,
+            'message': 'Role Name does not exist'
+        }), 404
+
+    # If the role name exists, then proceed to get the applications
     app_position_id = open_position_data.Position_ID
     applications = Application.query.filter_by(Position_ID=app_position_id).all()
 
@@ -221,41 +229,6 @@ def get_application(Role_Name):
     return jsonify({
         'code': 404,
         'message': 'No applications found for the specified Position_ID'
-    }), 404
-
-# view applications by application id
-@app.route('/Application/<int:Application_ID>')
-def get_application_by_id(Application_ID):
-    application = Application.query.filter_by(Application_ID=Application_ID).first()
-    if application:
-        staff_skills = Staff_Skill.query.filter_by(
-            Staff_ID=application.Staff_ID).all()
-        staff_skill_data = [skill.Skill_Name for skill in staff_skills]
-
-        staff_data = Staff.query.filter_by(Staff_ID=application.Staff_ID).first()
-        staff_name = staff_data.Staff_FName + ' ' + staff_data.Staff_LName
-
-        open_position_data = Open_Position.query.filter_by(Position_ID=application.Position_ID).first()
-        role_name = open_position_data.Role_Name
-
-        return jsonify({
-            'code': 200,
-            'application': {
-                'Application_ID': application.Application_ID,
-                'Position_ID': application.Position_ID,
-                'Staff_ID': application.Staff_ID,
-                'Application_Date': application.Application_Date,
-                'Cover_Letter': application.Cover_Letter,
-                'Application_Status': application.Application_Status,
-                'Staff_Skill': staff_skill_data,
-                'Staff_Name': staff_name,
-                'Role_Name': role_name
-            }
-        })
-
-    return jsonify({
-        'code': 404,
-        'message': 'No applications found for the specified Application_ID'
     }), 404
 
 
