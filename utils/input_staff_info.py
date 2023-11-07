@@ -184,6 +184,7 @@ def get_staff_applications(Staff_ID):
 
                 # Construct a JSON object with role_name, dept, application_date, and status
                 combined_data.append({
+                    'id': app.Application_ID,
                     'role_name': role.Role_Name,
                     'dept': role.Department,
                     'application_date': app.Application_Date,

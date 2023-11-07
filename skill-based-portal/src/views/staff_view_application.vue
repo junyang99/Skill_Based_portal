@@ -137,11 +137,47 @@
 <script>
     import StaffNavbar from '@/components/staff_navbar.vue';
     import HRNavbar from '@/components/hr_navbar.vue';
+    import axios from 'axios';
 
     export default {
         name: 'myApplications',
         mounted() {
             document.title = "All in One";
+            axios.get('http://127.0.0.1:5004/Application/' + this.$route.query.id)
+            .then(response => {
+                response = response.data.application;
+                console.log(response);
+                this.applicationData.roleName = response.Role_Name;
+                // this.applicationData.roleDepartment = response.Department;
+                this.applicationData.staffID = response.Staff_ID;
+                this.applicationData.staffName = response.Staff_Name;
+                this.applicationData.staffCoverLetter = response.Cover_Letter;
+                this.applicationData.staffSkills = response.Staff_Skill;
+                console.log(this.applicationData.staffID)
+                axios.get('http://127.0.0.1:5008/Staff/' + this.applicationData.staffID)
+                .then(response => {
+                    console.log(response.data.data);
+                    response = response.data.data
+                    this.applicationData.staffEmail = response.Email;
+                    this.applicationData.staffCountry = response.Country;
+                    this.applicationData.staffDepartment = response.Dept;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+                axios.get('http://127.0.0.1:5003/Role/' + this.applicationData.roleName)
+                .then(response => {
+                    console.log(response.data.data['Role'][0]['Department']);
+                    this.applicationData.roleDepartment = response.data.data['Role'][0]['Department'];
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
+            })
+            .catch(error => {
+                console.log(error);
+            });
         },
         created() {
             console.log("working")
